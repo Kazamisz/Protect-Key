@@ -1,0 +1,122 @@
+body{
+  font-family: 'Rubik', sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-top: 2em;
+  margin-bottom: 0;
+}
+
+.text-accent {
+  color: #00A1AB;
+}
+
+.fs-500 {
+  font-size: 1.3125rem;
+  margin: 0;
+}
+
+.mb {
+  margin-bottom: 0.5em;
+}
+
+.plans {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 2em 0;
+}
+
+.plan {
+  width: 16.5rem;
+  padding: 2em;
+  border-radius: 1em;
+  margin: 0 0.5em 1em;
+}
+
+.plan--light {
+  color: #4E4E4E;
+  background: linear-gradient(-45deg, #E5E3E8, #FAFAFA);
+}
+
+.plan--light .plan-price {
+  color: #00A1AB;
+  font-family: 'Rubik', sans-serif;
+}
+
+.plan--light .btn {
+  color: #FFF;
+  background: #4E4E4E;
+}
+
+.plan--accent {
+  color: #FFF;
+  background: linear-gradient(-45deg, #00A1AB, #3741A0);
+}
+
+.plan--accent .btn {
+  color: #4E4E4E;
+  background: #FFF;
+}
+
+.plan-title {
+  text-transform: uppercase;
+  margin: 0 0 1em;
+}
+
+.plan-price {
+  margin: 0;
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.plan-price span {
+  display: block;
+  font-size: 1.5625rem;
+  font-weight: 300;
+}
+
+.plan-description {
+  margin: 2em 0;
+  line-height: 1.5;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.5em 0.75em;
+  border-radius: 0.25em;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 700;
+  color: #FFF;
+  background: #00A1AB;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  opacity: 0.7;
+}
+
+.btn-mb {
+  margin-bottom: 3em;
+}
+
+.btn--light {
+  color: #4E4E4E;
+  background: #FFF;
+}
+
+.btn--dark {
+  color: #FFF;
+  background: #4E4E4E;
+}

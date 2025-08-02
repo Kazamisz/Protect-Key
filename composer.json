@@ -1,0 +1,6 @@
+{
+    "require": {
+        "mercadopago/dx-php": "3.0.0",
+        "sonata-project/google-authenticator": "^2.3"
+    }
+}

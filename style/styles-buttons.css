@@ -1,0 +1,170 @@
+.btn {
+    border: none;
+    width: 15em;
+    height: 5em;
+    border-radius: 3em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background: #1C1A1C;
+    cursor: pointer;
+    transition: all 450ms ease-in-out;
+    margin: 5% auto 5% auto;
+}
+
+body{
+  font-family: 'Rubik', sans-serif;
+}
+
+.sparkle {
+    fill: #AAAAAA;
+    transition: all 800ms ease;
+}
+
+.text {
+    font-weight: 600;
+    color: #AAAAAA;
+    font-size: medium;
+}
+
+.btn:hover {
+    background: linear-gradient(0deg, #4729aa, #37b6cc);
+    box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.4),
+        inset 0px -4px 0px 0px rgba(0, 0, 0, 0.2),
+        0px 0px 0px 4px rgba(255, 255, 255, 0.2),
+        0px 0px 180px 0px #9917FF;
+    transform: translateY(-2px);
+}
+
+.btn:hover .text {
+    color: white;
+}
+
+.btn:hover .sparkle {
+    fill: white;
+    transform: scale(1.2);
+}
+
+
+/*   BUTTON SALVAR       */
+
+.csb-button {
+    font-family: inherit;
+    font-size: 20px;
+    background: #378BCC;
+    color: white;
+    fill: rgb(235, 235, 235);
+    padding: 0.7em 1em;
+    padding-left: 0.9em;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 15px;
+    font-weight: 1000;
+    transition: all 0.8s ease;
+}
+
+.csb-button .csb-text {
+    display: block;
+    margin-left: 0.3em;
+    transition: all 0.3s ease-in-out;
+}
+
+.csb-button .csb-icon {
+    display: block;
+    transform-origin: center center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.csb-button:hover {
+    background: #2B2585;
+    box-shadow: 0 0 0 2px #e2e2e2;
+}
+
+.csb-button:hover .csb-svg-wrapper {
+    transform: scale(1.25);
+    transition: 0.5s linear;
+}
+
+.csb-button:hover .csb-icon {
+    transform: translateX(1.2em) scale(1.1);
+    fill: #fff;
+}
+
+.csb-button:hover .csb-text {
+    opacity: 0;
+    transition: 0.5s linear;
+}
+
+.csb-button:active {
+    transform: scale(0.95);
+}
+
+
+
+/* BUTTON   EXCLUIR */
+.db-button {
+    width: 145px;
+    height: 55px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background: red;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+    background: #e62222;
+    transition: 200ms;
+    font-family: inherit;
+  }
+  
+  .db-button span {
+    transition: 200ms;
+  }
+  
+  .db-button .db-text {
+    transform: translateX(25px);
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .db-button .db-icon {
+    position: absolute;
+    border-left: 1px solid #c41b1b;
+    transform: translateX(110px);
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .db-button svg {
+    width: 15px;
+    fill: #eee;
+  }
+  
+  .db-button:hover {
+    background: #ff3636;
+  }
+  
+  .db-button:hover .db-text {
+    color: transparent;
+  }
+  
+  .db-button:hover .db-icon {
+    width: 150px;
+    border-left: none;
+    transform: translateX(0);
+  }
+  
+  .db-button:focus {
+    outline: none;
+  }
+  
+  .db-button:active .db-icon svg {
+    transform: scale(0.8);
+  }
