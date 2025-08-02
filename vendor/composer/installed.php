@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => '__root__',
+        'pretty_version' => 'dev-front',
+        'version' => 'dev-front',
+        'reference' => 'f9b3d18837af5a5a2bdf14af57b4aff8ea19db2c',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-front',
+            'version' => 'dev-front',
+            'reference' => 'f9b3d18837af5a5a2bdf14af57b4aff8ea19db2c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'mercadopago/dx-php' => array(
+            'pretty_version' => '3.0.0',
+            'version' => '3.0.0.0',
+            'reference' => '47fc9fd20622af8cce0d9246c0b11d55bd64037c',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../mercadopago/dx-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'sonata-project/google-authenticator' => array(
+            'pretty_version' => '2.3.1',
+            'version' => '2.3.1.0',
+            'reference' => '71a4189228f93a9662574dc8c65e77ef55061b59',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sonata-project/google-authenticator',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);

@@ -1,0 +1,186 @@
+main {
+    background: linear-gradient(160deg, #090c30 0%, #1e2a91 50%, #3d84d6c7 100%);
+}
+
+body {
+    font-family: 'Rubik', sans-serif;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    font-family: inherit;
+    gap: 10px;
+    padding-inline: 2em;
+    padding-bottom: 0.4em;
+    background-color: #171717;
+    background-color: #0a192f;
+    border-radius: 20px;
+}
+
+.form-heading {
+    text-align: center;
+    margin: 2em;
+    color: white;
+    font-size: 1.8em;
+    font-weight: 500;
+    background-color: transparent;
+    align-self: center;
+}
+
+.form-field {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    border-radius: 10px;
+    padding: 0.6em;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: #171717;
+    box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+}
+
+.input-field {
+    background: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    color: #ccd6f6;
+    padding-inline: 1em;
+}
+
+.sendMessage-btn {
+    cursor: pointer;
+    margin-bottom: 3em;
+    padding: 1.1em 1em;
+    border-radius: 15px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #6dabf1;
+    font-size: 14px;
+    font-weight: bold;
+    outline: 2px solid #6dabf1;
+    transition: all ease-in-out 0.3s;
+    width: 20%;
+    margin: 20px auto 40px auto;
+}
+
+.sendMessage-btn:hover {
+    transition: all ease-in-out 0.3s;
+    background-color: #1a6cc9;
+    color: rgb(238, 238, 238);
+    cursor: pointer;
+    box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+}
+
+.form-card1 {
+    background-image: linear-gradient(163deg, #649BDB 0%, #3a4ea5 100%);
+    border-radius: 22px;
+    transition: all 0.3s;
+    margin: 10vh 25vw;
+}
+
+.form-card1:hover {
+    box-shadow: 0px 0px 30px 1px rgba(100, 255, 218, 0.3);
+}
+
+.form-card2 {
+    border-radius: 0;
+    transition: all 0.2s;
+}
+
+.form-card2:hover {
+    transform: scale(0.98);
+    border-radius: 20px;
+}
+
+/* Estilo do container principal */
+.whatsapp-contact {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #e5f0ff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    z-index: 999;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    transition: all 0.3s ease;
+    text-align: center;
+    /* Centraliza o conteúdo */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centraliza os elementos na vertical */
+}
+
+.whatsapp-contact:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo do texto */
+.whatsapp-contact p {
+    margin: 0 0 10px 0;
+    color: #444;
+    font-size: 16px;
+    line-height: 1.4;
+    width: 100%;
+    /* Garante que o texto ocupe toda a largura */
+    text-align: center;
+}
+
+/* Estilo do link/botão */
+.whatsapp-contact a {
+    display: flex;
+    align-items: center;
+    /* Centraliza o conteúdo verticalmente */
+    justify-content: center;
+    /* Centraliza o conteúdo horizontalmente */
+    background-color: #25D366;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    position: relative;
+    padding-left: 45px;
+    margin: 0 auto;
+    /* Centraliza o botão */
+    width: fit-content;
+    /* Ajusta a largura ao conteúdo */
+}
+
+/* Ícone do WhatsApp usando pseudo-elemento */
+.whatsapp-contact a::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath fill='white' d='M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.whatsapp-contact a:hover {
+    background-color: #128C7E;
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    .whatsapp-contact {
+        bottom: 10px;
+        right: 10px;
+        max-width: calc(100% - 40px);
+    }
+}

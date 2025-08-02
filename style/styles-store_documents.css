@@ -1,0 +1,586 @@
+/* Estilo global do body */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Rubik', sans-serif;
+    background-color: #0b2042;
+    /* Cor de fundo azul escuro */
+    color: #ffffff;
+    /* Cor do texto branco */
+  }
+  
+  main {
+    background: linear-gradient(160deg, #090c30 0%, #1e2a91 50%, #3d84d6c7 100%);
+    min-height: 1000px;
+  }
+  
+  /* Estilo da imagem que não possui senhas */
+  .img-no-itens {
+    display: block;
+    margin: 10vh auto 0% auto;
+    width: 400px;
+  }
+  
+  table {
+    border-spacing: 0 !important;
+  }
+  
+  /* ESTILO BOTÃO ADICIONAR SENHAS */
+  .button {
+    --main-focus: #2d8cf0;
+    --font-color: #dedede;
+    --bg-color-sub: #140B5C;
+    --bg-color: #2B2585;
+    --main-color: #dedede;
+    position: relative;
+    width: 170px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--main-color);
+    box-shadow: 2px 2px var(--main-color);
+    background-color: var(--bg-color);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0 25vw 0 auto;
+  }
+  
+  .button,
+  .button__icon,
+  .button__text {
+    transition: all 0.3s;
+  }
+  
+  .button .button__text {
+    transform: translateX(25px);
+    color: var(--font-color);
+    font-weight: 700;
+    font-size: 18px;
+  }
+  
+  .button .button__icon {
+    position: absolute;
+    transform: translateX(129px);
+    height: 100%;
+    width: 39px;
+    background-color: var(--bg-color-sub);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .button .svg {
+    width: 20px;
+  }
+  
+  .button:hover {
+    background: var(--bg-color);
+  }
+  
+  .button:hover .button__text {
+    color: transparent;
+  }
+  
+  .button:hover .button__icon {
+    width: 170px;
+    transform: translateX(0);
+  }
+  
+  .button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px var(--main-color);
+  }
+  
+  
+  .bin-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: rgb(255, 95, 95);
+    cursor: pointer;
+    border: 2px solid rgb(255, 201, 201);
+    transition-duration: 0.3s;
+  }
+  
+  .bin-bottom {
+    width: 15px;
+  }
+  
+  .bin-top {
+    width: 17px;
+    transform-origin: right;
+    transition-duration: 0.3s;
+  }
+  
+  .bin-button:hover .bin-top {
+    transform: rotate(30deg);
+  }
+  
+  .bin-button:hover {
+    background-color: rgb(255, 0, 0);
+  }
+  
+  .bin-button:active {
+    transform: scale(0.9);
+  }
+  
+  
+  .save-btn,
+  .cancel-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .toggle-password-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: transparent;
+  }
+  
+  .toggle-password-btn img {
+    width: 13px;
+    /* Tamanho do ícone */
+    height: 13px;
+  }
+  
+  .rndpass-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .rndpass-btn img {
+    width: 13px;
+    /* Ajuste o tamanho da imagem conforme necessário */
+    height: 13px;
+  }
+  
+  .save-btn {
+    background-color: #1c91ff;
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .save-btn:hover {
+    background-color: #0b5ab7;
+  }
+  
+  .cancel-btn {
+    background-color: #ea4335;
+    color: #ffffff;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #d93b30;
+  }
+  
+  /* Estilo da tabela de senhas salvas */
+  .saved-table {
+    min-width: fit-content;
+    width: 60%;
+    margin: 6% auto 20vh auto;
+    background-color: #0d3b66;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* Sombra leve */
+  }
+  
+  .saved-table table {
+    width: 100%;
+    color: #ffffff;
+  }
+  
+  .saved-table th,
+  .saved-table td {
+    padding: 15px;
+    text-align: left;
+    border-right: 2px solid #1c91ff;
+    /* Adiciona a linha vertical branca */
+  }
+  
+  .saved-table th:last-child,
+  .saved-table td:last-child {
+    border-right: none;
+    /* Remove a linha na última coluna */
+  }
+  
+  .saved-table th {
+    background-color: #122a4a;
+    color: #ffffff;
+    /* Título da tabela em branco */
+    border-bottom: 2px solid #1c91ff;
+  }
+  
+  .th-left {
+    border-top-left-radius: 10px;
+  }
+  
+  .th-right {
+    border-top-right-radius: 10px;
+  }
+  
+  .saved-table td a {
+    color: #1c91ff;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+    color: white;
+  }
+  
+  .saved-table td a:hover {
+    color: #4285f4;
+    /* Mudança de cor ao passar o mouse */
+  }
+  
+  .update-btn,
+  .delete-btn {
+    padding: 8px 12px;
+    background-color: #1c91ff;
+    border: none;
+    color: #ffffff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .update-btn:hover,
+  .delete-btn:hover {
+    background-color: #0b5ab7;
+  }
+  
+  /*    ESTILIZAÇÃO FORM         */
+  
+  /* Variáveis de cores */
+  :root {
+    --primary-blue: #1a4b8c;
+    --secondary-blue: #2673dd;
+    --dark-blue: #0d2851;
+    --light-blue: #4a90e2;
+    --hover-blue: #1557b0;
+    --input-bg: #f5f8ff;
+    --white: #ffffff;
+  }
+  
+  /* Estilo do container do formulário */
+  .form-container {
+    position: absolute;
+    top: 60vh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    background-image: radial-gradient(at 88% 40%, rgba(28, 14, 80, 0.938) 0px, transparent 100%), radial-gradient(at 49% 30%, rgb(59, 59, 141) 0px, transparent 100%), radial-gradient(at 14% 26%, rgb(21, 22, 61) 0px, transparent 100%), radial-gradient(at 0% 64%, #1929d8 0px, transparent 100%), radial-gradient(at 41% 94%, #6b60ad 0px, transparent 100%), radial-gradient(at 100% 99%, #350491 0px, transparent 100%);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    width: 60%;
+    max-width: 600px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .form-container.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  
+  
+  
+  /* Estilo dos botões */
+  .save-btn,
+  .cancel-btn,
+  .toggle-password-btn,
+  .rndpass-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 5px;
+  }
+  
+  .save-btn {
+    background-color: var(--secondary-blue);
+    color: var(--white);
+  }
+  
+  .save-btn:hover {
+    background-color: var(--hover-blue);
+    transform: translateY(-2px);
+  }
+  
+  .cancel-btn {
+    background-color: #dc3545;
+    color: var(--white);
+  }
+  
+  .cancel-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+  }
+  
+  .toggle-password-btn,
+  .rndpass-btn {
+    color: var(--white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+  }
+  
+  .toggle-password-btn:hover,
+  .rndpass-btn:hover {
+    background-color: transparent;
+    transform: translateY(-2px);
+  }
+  
+  .toggle-password-btn img,
+  .rndpass-btn img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+  }
+  
+  /* Container para os botões */
+  .form-container form {
+    text-align: center;
+    /* Centraliza os botões */
+  }
+  
+  /* Mensagens de erro e sucesso */
+  .message {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    text-align: center;
+    /* Centraliza as mensagens */
+    width: 70%;
+    /* Mantém a mesma largura dos inputs */
+  }
+  
+  .message.error {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+  }
+  
+  .message.success {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
+  }
+  
+  /* Animação de entrada do formulário */
+  @keyframes formFadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -60%);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  .form-container.show {
+    animation: formFadeIn 0.4s ease forwards;
+  }
+  
+  .button-save {
+    background-color: #f3f7fe;
+    color: #3b82f6;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 100px;
+    height: 45px;
+    transition: 0.3s;
+    font-weight: 700;
+    margin: 0 3% 0 0;
+  }
+  
+  .button-save:hover {
+    background-color: #3b82f6;
+    box-shadow: 0 0 0 5px #3b83f65f;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+  
+  .button-remove {
+    background-color: #f3f7fe;
+    color: #C82333;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 100px;
+    height: 45px;
+    transition: 0.3s;
+    font-weight: 700;
+    margin: 0 3% 0 0;
+  }
+  
+  .button-remove:hover {
+    background-color: #C82333;
+    box-shadow: 0 0 0 5px #882933;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+  
+  
+  
+  .button {
+    --main-focus: #2d8cf0;
+    --font-color: #dedede;
+    --bg-color-sub: #222;
+    --bg-color: #323232;
+    --main-color: #dedede;
+    position: relative;
+    width: 150px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--main-color);
+    box-shadow: 4px 4px var(--main-color);
+    background-color: var(--bg-color);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 0;
+  }
+  
+  /* Estilo para os botões Atualizar e Excluir ficarem lado a lado */
+  td .buttons {
+    display: flex;
+    /* Coloca os botões lado a lado */
+    gap: 10px;
+    /* Espaçamento entre os botões */
+    justify-content: center;
+    /* Centraliza os botões */
+    align-items: center;
+  }
+  
+  
+  .button,
+  .button__icon,
+  .button__text {
+    transition: all 0.3s;
+  }
+  
+  .button .button__text {
+    color: var(--font-color);
+    font-weight: 600;
+  }
+  
+  .button .button__icon {
+    position: absolute;
+    transform: translateX(109px);
+    height: 100%;
+    width: 39px;
+    background-color: var(--bg-color-sub);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .button .svg {
+    width: 20px;
+    fill: var(--main-color);
+  }
+  
+  .button:hover {
+    background: var(--bg-color);
+  }
+  
+  .button:hover .button__text {
+    color: transparent;
+  }
+  
+  .button:hover .button__icon {
+    width: 148px;
+    transform: translateX(0);
+  }
+  
+  .button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px var(--main-color);
+  }
+  
+  
+  
+  
+  
+  
+  
+  .botao-adicionar {
+    font-family: 'rubik';
+    padding: 1.1em 2em;
+    background: none;
+    border: 2px solid #fff;
+    font-size: 20px;
+    color: #fff;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    border-radius: 25px;
+    background-color: #398ACB;
+    font-weight: 700;
+    box-shadow: 0 2px 0 2px #000;
+    margin: 10vh auto 0 45vw;
+  }
+  
+  .botao-adicionar:before {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 120%;
+    background-color: #000000e5;
+    top: 50%;
+    transform: skewX(30deg) translate(-150%, -50%);
+    transition: all 0.8s;
+  
+  }
+  
+  .botao-adicionar:hover {
+    background-color: #4cc9f0;
+    color: #1a1a1ae7;
+    box-shadow: 0 2px 0 2px #0d3b66;
+  }
+  
+  .botao-adicionar:hover::before {
+    transform: skewX(30deg) translate(150%, -50%);
+    transition-delay: 0.1s;
+  }
+  
+  .botao-adicionar:active {
+    transform: scale(0.9);
+  }
+
+  #observations {
+    max-height: 150px; /* Altura máxima */
+    min-height: 50px; /* Altura mínima */
+    max-width: 100%; /* Largura máxima (ajustável) */
+    overflow-y: auto; /* Adiciona barra de rolagem quando necessário */
+}
