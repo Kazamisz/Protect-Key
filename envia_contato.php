@@ -1,6 +1,7 @@
 <?php
 session_start(); // Inicia a sessão para acessar os dados do usuário logado
 
+require_once __DIR__ . '/php/bootstrap.php';
 require("./php/functions.php");
 require("./php/conectar.php");
 
@@ -8,7 +9,7 @@ $successMessage = '';
 $errorMessage = '';
 $userNome = '';
 $userEmail = '';
-$userID = '';
+$userID = null;
 
 // Verifica se o usuário está logado
 if (isset($_SESSION['userNome']) && isset($_SESSION['userEmail'])) {
@@ -111,8 +112,8 @@ if (isset($_GET['success'])) {
                         <!--    <a href="#" class="navbar-item">Sobre</a>   -->
                         <a href="envia_contato.php" class="navbar-item">Contate-nos</a>
                         <?php if (checkAdminRole($conn, $userID)) { ?>
-                            <a href="gerenciador.php" class="navbar-item">Gerenciador</a>
-                            <a href="logs.php" class="navbar-item">Logs</a>
+                        <a href="gerenciador.php" class="navbar-item">Gerenciador</a>
+                        <a href="logs.php" class="navbar-item">Logs</a>
                         <?php } ?>
                     </div>
                 </div>
@@ -126,20 +127,20 @@ if (isset($_GET['success'])) {
                         </summary>
                         <div class="dropdown-content">
                             <?php if (isset($_SESSION['userNome'])): ?>
-                                <?php
+                            <?php
                                 // Utiliza strtok para obter a primeira parte antes do espaço
                                 $primeiroNome = strtok($_SESSION['userNome'], ' ');
                                 ?>
-                                <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
-                                <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                            <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
+                            <a href="conta.php"> Detalhes da Conta</a>
+                            <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
-                                <p>Bem-vindo!</p>
-                                <a href="register.php">Registrar</a>
-                                <a href="login.php"
-                                    style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;"
-                                    class="dropdown-content-a2">Login</a>
+                            <p>Bem-vindo!</p>
+                            <a href="register.php">Registrar</a>
+                            <a href="login.php"
+                                style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;"
+                                class="dropdown-content-a2">Login</a>
                             <?php endif; ?>
                         </div>
                     </details>
@@ -158,28 +159,30 @@ if (isset($_GET['success'])) {
                     <!-- Exibe mensagens de sucesso ou erro -->
                     <div class="message">
                         <?php if ($successMessage): ?>
-                            <p class="success-message"
-                                style="padding: 10px; color: green; margin-bottom: 7%; font-weight: bold; font-size: 14px; background-color: #ddffe0; border-radius: 10px;">
-                                <?php echo $successMessage; ?>
-                            </p>
+                        <p class="success-message"
+                            style="padding: 10px; color: green; margin-bottom: 7%; font-weight: bold; font-size: 14px; background-color: #ddffe0; border-radius: 10px;">
+                            <?php echo $successMessage; ?>
+                        </p>
                         <?php elseif ($errorMessage): ?>
-                            <p class="error-message"
-                                style="padding: 10px; color: red; margin-bottom: 7%; font-weight: bold; font-size: 14px; background-color: #fdd; border-radius: 10px;">
-                                <?php echo $errorMessage; ?>
-                            </p>
+                        <p class="error-message"
+                            style="padding: 10px; color: red; margin-bottom: 7%; font-weight: bold; font-size: 14px; background-color: #fdd; border-radius: 10px;">
+                            <?php echo $errorMessage; ?>
+                        </p>
                         <?php endif; ?>
                     </div>
 
                     <!-- Campo Nome -->
                     <div class=" form-field">
                         <input type="text" id="name" name="name" class="input-field" placeholder="Insira seu Nome"
-                            value="<?php echo htmlspecialchars($userNome); ?>" <?php echo $userNome ? 'readonly' : 'required'; ?> />
+                            value="<?php echo htmlspecialchars($userNome); ?>"
+                            <?php echo $userNome ? 'readonly' : 'required'; ?> />
                     </div>
 
                     <!-- Campo E-mail -->
                     <div class="form-field">
                         <input type="email" id="email" name="email" class="input-field" placeholder="Insira seu E-mail"
-                            value="<?php echo htmlspecialchars($userEmail); ?>" <?php echo $userEmail ? 'readonly' : 'required'; ?> />
+                            value="<?php echo htmlspecialchars($userEmail); ?>"
+                            <?php echo $userEmail ? 'readonly' : 'required'; ?> />
                     </div>
 
                     <!-- Campo Mensagem -->
@@ -197,7 +200,7 @@ if (isset($_GET['success'])) {
         <!-- Link para WhatsApp -->
         <div class="whatsapp-contact">
             <p>Se preferir, você pode entrar em contato diretamente pelo WhatsApp:</p>
-            <a href="https://wa.me/5518997423619?text=Olá!%20Preciso%20de%20suporte." target="_blank">Entrar em
+            <a href="https://wa.me/5518988241531?text=Olá!%20Preciso%20de%20suporte." target="_blank">Entrar em
                 Contato</a>
 
         </div>

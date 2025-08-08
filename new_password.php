@@ -1,10 +1,12 @@
 <?php
+require_once __DIR__ . '/php/bootstrap.php';
 require('./php/conectar.php');
 require("./php/functions.php");
 
 // Inicializar variáveis para mensagens de erro e sucesso
 $errorMessage = '';
 $successMessage = '';
+$userID = null;
 
 // Verificar se o usuário está autenticado para redefinição de senha
 session_start();

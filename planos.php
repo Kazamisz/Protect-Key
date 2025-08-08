@@ -1,6 +1,17 @@
 <?php
-require("./php/planos.php")
-    ?>
+session_start();
+require_once __DIR__ . '/php/bootstrap.php';
+require("./php/planos.php");
+
+// Verifica se o usuário está logado
+if (isset($_SESSION['userID'])) {
+    $userID = $_SESSION['userID']; // Obtém o ID do usuário da sessão
+    $userPlan = getUserPlan($userID, $conn); // Obtém o plano do usuário
+} else {
+    $userPlan = 'Não logado'; // Valor padrão se o usuário não estiver logado
+    $userID = null; // Inicializa a variável userID
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 

@@ -5,7 +5,7 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 
 // Incluir arquivos de configuração e autoload
 $config = require_once 'config.php';
-require_once 'vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Exceptions\MPApiException;
