@@ -160,23 +160,15 @@ ScrollReveal().reveal('#savedTable', {
 });
 
 
-// Initialize ScrollReveal
-ScrollReveal().reveal('.title', {
+// Animações dinâmicas para o conteúdo da aba ativa no gerador de senhas
+ScrollReveal().reveal('.tab-content.active .title', {
     distance: '50px',
     origin: 'bottom',
     duration: 1000,
     delay: 300
 });
 
-ScrollReveal().reveal('.tab-content', {
-    distance: '30px',
-    origin: 'top',
-    duration: 800,
-    delay: 200,
-    interval: 100
-});
-
-ScrollReveal().reveal('.field-group', {
+ScrollReveal().reveal('.tab-content.active .field-group', {
     distance: '30px',
     origin: 'left',
     duration: 800,
@@ -184,7 +176,7 @@ ScrollReveal().reveal('.field-group', {
     interval: 150
 });
 
-ScrollReveal().reveal('.options-container, .actions', {
+ScrollReveal().reveal('.tab-content.active .options-container, .tab-content.active .actions, .tab-content.active .options-container02', {
     distance: '30px',
     origin: 'right',
     duration: 800,
@@ -192,14 +184,14 @@ ScrollReveal().reveal('.options-container, .actions', {
     interval: 150
 });
 
-ScrollReveal().reveal('.slider-container', {
+ScrollReveal().reveal('.tab-content.active .slider-container', {
     distance: '30px',
     origin: 'bottom',
     duration: 900,
     delay: 600
 });
 
-ScrollReveal().reveal('.copy-button', {
+ScrollReveal().reveal('.tab-content.active .copy-button', {
     distance: '50px',
     origin: 'bottom',
     duration: 1000,

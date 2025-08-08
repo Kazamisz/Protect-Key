@@ -1,6 +1,10 @@
 <?php
 session_start();
+require_once __DIR__ . '/php/bootstrap.php';
 require('./php/register.php');
+
+$userID = null;
+
 ?>
 
 <!DOCTYPE html>
@@ -119,7 +123,7 @@ require('./php/register.php');
 
                     <div class="input-row">
                         <div class="input-box">
-                            <input type="text" id="userCpf" name="userCpf" placeholder="Digite seu CPF">
+                            <input type="text" id="userCpf" name="userCpf" placeholder="Digite seu CPF*">
                         </div>
                         <div class="input-box">
                             <input type="text" id="userTel" name="userTel" placeholder="Digite seu telefone">

@@ -12,8 +12,6 @@ $successMessage = '';
 // Definir o limite de tamanho para a senha (em caracteres)
 $passwordMaxLength = 255;
 
-session_start();
-
 // Verificar se o usuário está autenticado
 if (!isset($_SESSION['userID'])) {
     header('Location: login.php');

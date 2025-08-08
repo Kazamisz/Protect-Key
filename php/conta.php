@@ -1,12 +1,9 @@
 <?php
 require('conectar.php'); // Conexão com o banco de dados
-require("functions.php");
-require('./lib/vendor/autoload.php');
+require_once("functions.php");
+require __DIR__ . '/../vendor/autoload.php';
 
-use Sonata\GoogleAuthenticator\GoogleAuthenticator;
-use Sonata\GoogleAuthenticator\GoogleQrUrl;
-
-session_start();
+use PragmaRX\Google2FA\Google2FA;
 
 // Verificar se o usuário está autenticado
 if (!isset($_SESSION['userID'])) {
@@ -28,12 +25,13 @@ $secret = '';
 // Função para gerar um segredo
 function generateSecret()
 {
-    $g = new GoogleAuthenticator();
-    return $g->generateSecret();
+    $google2fa = new Google2FA();
+    return $google2fa->generateSecretKey();
 }
 
 // Obter as informações do usuário
 $userInfo = getUserInfo($conn, $userID);
+
 $userNome = $userInfo['userNome'];
 $userEmail = $userInfo['userEmail'];
 $userCpf = $userInfo['userCpf'];
@@ -58,33 +56,26 @@ if (empty($secret)) {
 }
 
 // Gere a URL do QR code para o Google Authenticator
+$google2fa = new \PragmaRX\Google2FA\Google2FA();
 $siteName = 'Protect Key'; // Nome que aparecerá no Google Authenticator
-$qrCodeUrl = GoogleQrUrl::generate($siteName, $secret, 'Empresa');
+$qrCodeData = $google2fa->getQRCodeUrl(
+    $siteName,
+    $userEmail,
+    $secret
+);
+
+$renderer = new \BaconQrCode\Renderer\ImageRenderer(
+    new \BaconQrCode\Renderer\RendererStyle\RendererStyle(256),
+    new \BaconQrCode\Renderer\Image\SvgImageBackEnd()
+);
+$writer = new \BaconQrCode\Writer($renderer);
+$qrCodeUrl = 'data:image/svg+xml;base64,' . base64_encode($writer->writeString($qrCodeData));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['deactivateAccount'])) {
-    // Alterar o estado do usuário para "inativo"
-    $deactivateSql = "UPDATE users SET userEstato = 'Inativo' WHERE userID = ?";
-    if ($stmt = $conn->prepare($deactivateSql)) {
-        $stmt->bind_param("i", $userID);
-        $stmt->execute();
-        
-        if ($stmt->affected_rows > 0) {
-            // Log de ação
-            logAction($conn, $userID, 'Conta Desativada', 'O usuário alterou seu estado para inativo.');
-
-            // Encerrar a sessão
-            session_destroy();
-
-            // Redirecionar para a página inicial ou de login
-            header("Location: ../desativacao.php");
-            exit();
-        } else {
-            $errorMessage = 'Erro ao desativar a conta. Por favor, tente novamente.';
-        }
-        $stmt->close();
-    } else {
-        $errorMessage = 'Erro ao processar a solicitação.';
-    }
+    // Apenas redireciona para a página de confirmação de desativação.
+    // A lógica de exclusão foi movida para salvar_feedback.php
+    header("Location: ../desativacao.php");
+    exit();
 }
 
 // Verificar se o formulário foi enviado
@@ -173,9 +164,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     // Atualização do banco de dados
-                    $updateSql = "UPDATE users SET userNome = ?, userEmail = ?, userCpf = ?, userTel = ?, userPassword = ?, securityWord = ?, dicaSenha = ?, enableTwoFactor = ?, secret = ? WHERE userID = ?";
+                    $updateSql = "UPDATE users SET userNome = ?, userEmail = ?, userCpf = ?, userTel = ?, userPassword = ?, securityWord = ?, dicaSenha = ?, enableTwoFactor = ? WHERE userID = ?";
                     if ($stmt = $conn->prepare($updateSql)) {
-                        $stmt->bind_param("sssssssssi", $newUserNome, $newUserEmail, $newUserCpf, $newUserTel, $hashedPassword, $hashedSecurityWord, $newDicaSenha, $enableTwoFactor, $secret, $userID);
+                        $stmt->bind_param("ssssssssi", $newUserNome, $newUserEmail, $newUserCpf, $newUserTel, $hashedPassword, $hashedSecurityWord, $newDicaSenha, $enableTwoFactor, $userID);
                         $stmt->execute();
 
                         if ($stmt->affected_rows > 0) {

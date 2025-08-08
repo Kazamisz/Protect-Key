@@ -1,5 +1,4 @@
 <?php
-session_start();
 require("conectar.php");
 require("functions.php"); 
 require("preference.php"); 

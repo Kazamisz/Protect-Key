@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once __DIR__ . '/php/bootstrap.php';
 require("./php/esqueceu_senha.php");
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {
@@ -8,6 +9,7 @@ if (isset($_SESSION['userID'])) {
 } else {
     $userPlan = 'Não logado'; // Valor padrão se o usuário não estiver logado
 }
+$userID = null;
 ?>
 
 <!DOCTYPE html>

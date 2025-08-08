@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
 require("conectar.php");
-require_once('./lib/vendor/autoload.php'); // Load Composer's autoloader
 
+// Importa as classes do PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 // Definir a chave de criptografia (deve ser mantida em segredo)
@@ -111,15 +113,15 @@ function sendEmail($toEmail, $subject, $bodyContent, $altBodyContent = '')
         // Configurações do servidor SMTP
         $mail->CharSet = "UTF-8";
         $mail->isSMTP();
-        $mail->Host = 'sandbox.smtp.mailtrap.io'; // Endereço do servidor SMTP
+        $mail->Host = $_ENV['MAIL_HOST']; // Endereço do servidor SMTP
         $mail->SMTPAuth = true;
-        $mail->Username = '2d06e60e772532'; // Seu nome de usuário do SMTP
-        $mail->Password = '48251569a78ac1'; // Sua senha do SMTP
+        $mail->Username = $_ENV['MAIL_USERNAME']; // Seu nome de usuário do SMTP
+        $mail->Password = $_ENV['MAIL_PASSWORD']; // Sua senha do SMTP
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 2525;
+        $mail->Port = $_ENV['MAIL_PORT'];
 
         // Configurações do e-mail
-        $mail->setFrom('matheusridrigues2@gmail.com', 'Segurança');
+        $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], 'Segurança');
         $mail->addAddress($toEmail);
 
         // Conteúdo do e-mail
@@ -276,7 +278,8 @@ function checkAdminRole($conn, $userID)
         } else {
             return false;
         }
-    } else {
+    }
+    else {
         return false;
     }
 }
@@ -336,6 +339,15 @@ function isAlreadyRegistered($conn, $field, $value)
         return $result;
     }
     return false;
+}
+
+// Função para gerar um token CSRF
+function generateCsrfToken()
+{
+    if (empty($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
 }
 
 ?>

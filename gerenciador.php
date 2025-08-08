@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/php/bootstrap.php';
 require('./php/gerenciador.php');
 
 // Verifica se o usuário está logado

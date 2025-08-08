@@ -259,10 +259,10 @@ if (isset($_SESSION['userID'])) {
                             <div class="custom-range-slider_line">
                                 <div id="words-slider-line" class="custom-range-slider_line-fill"></div>
                             </div>
-                            <input type="range" id="words-slider" class="custom-range-slider_input slider" min="0"
+                            <input type="range" id="words-slider" class="custom-range-slider_input slider" min="1"
                                 max="10" value="0">
                         </div>
-                        <div class="slider-value">Palavras: <span id="words-value">0</span></div>
+                        <div class="slider-value">Palavras: <span id="words-value">1</span></div>
                     </div>
                 </div>
 
@@ -385,7 +385,7 @@ if (isset($_SESSION['userID'])) {
     </footer>
 
     <script>
-        // Predefined word list for passphrase generation
+        // Lista de palavras predefinida para geração de palavras-passe
         const palavras = [
             "casa", "carro", "livro", "mesa", "café", "água", "porta", "chave",
             "papel", "lápis", "vida", "amor", "tempo", "terra", "fogo", "vento",
@@ -396,87 +396,87 @@ if (isset($_SESSION['userID'])) {
             "ouro", "prata", "vidro", "metal", "roupa", "meia", "cinto", "bolsa"
         ];
 
-        // Character sets for password generation
+        // Conjuntos de caracteres para geração de senha
         const lowercase = "abcdefghijklmnopqrstuvwxyz";
         const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const numbers = "0123456789";
         const symbols = "!@#$%^&*()_+[]{}<>?|~";
 
-        // Tab Switching Function
+        // Função de troca de abas
         function switchTab(tabName) {
-            // Remove active class from all tabs
+            // Remove a classe ativa de todas as abas
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            // Add active class to selected tab
+            // Adiciona a classe ativa à aba selecionada
             document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
 
-            // Hide all tab contents
+            // Esconde todos os conteúdos de aba
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
-            // Show selected tab content
+            // Mostra o conteúdo da aba selecionada
             document.getElementById(`${tabName}-tab`).classList.add('active');
         }
 
-        // Password Generation Function
+        // Função de Geração de Senha
         function generatePassword() {
-            // Get checkbox states
+            // Obtém os estados das caixas de seleção
             const useLowercase = document.getElementById("use-lowercase").checked;
             const useUppercase = document.getElementById("use-uppercase").checked;
             const useNumbers = document.getElementById("use-numbers").checked;
             const useSymbols = document.getElementById("use-symbols").checked;
 
-            // Get password length from slider
+            // Obtém o comprimento da senha do controle deslizante
             const length = document.getElementById("custom-length-slider").value;
 
-            // Build character set based on selected options
+            // Constrói o conjunto de caracteres com base nas opções selecionadas
             let charSet = "";
             if (useLowercase) charSet += lowercase;
             if (useUppercase) charSet += uppercase;
             if (useNumbers) charSet += numbers;
             if (useSymbols) charSet += symbols;
 
-            // Validate character set
+            // Valida o conjunto de caracteres
             if (!charSet) {
                 alert("Selecione pelo menos uma opção de caracteres.");
                 return;
             }
 
-            // Generate password
+            // Gera a senha
             let password = "";
             for (let i = 0; i < length; i++) {
                 const randomIndex = Math.floor(Math.random() * charSet.length);
                 password += charSet[randomIndex];
             }
 
-            // Display generated password
+            // Exibe a senha gerada
             document.getElementById("generated-password").value = password;
 
-            // Calcular e exibir a estimativa de tempo de quebra
+            // Calcula e exibe a estimativa de tempo de quebra
             calculateBreakTime(password);
         }
 
-        // Passphrase Generation Function
+        // Função de Geração de Palavras-Passe
         function generatePassphrase() {
-            // Get passphrase generation options
+            // Obtém as opções de geração de palavras-passe
             const wordCount = parseInt(document.getElementById("words-slider").value);
             const capitalizeFirst = document.getElementById("capitalize-first").checked;
             const capitalizeAll = document.getElementById("capitalize-all").checked;
             const includeNumber = document.getElementById("include-number").checked;
             const separator = document.getElementById("word-separator").value;
 
-            // Generate passphrase
+            // Gera a palavra-passe
             let selectedWords = [];
             let usedIndexes = new Set();
 
-            // Select unique words
+            // Seleciona palavras únicas
             while (selectedWords.length < wordCount) {
                 const index = Math.floor(Math.random() * palavras.length);
                 if (!usedIndexes.has(index)) {
                     let word = palavras[index];
 
-                    // Apply capitalization
+                    // Aplica a capitalização
                     if (capitalizeAll || (capitalizeFirst && selectedWords.length === 0)) {
                         word = word.charAt(0).toUpperCase() + word.slice(1);
                     }
@@ -486,62 +486,62 @@ if (isset($_SESSION['userID'])) {
                 }
             }
 
-            // Optionally add a random number
+            // Opcionalmente, adiciona um número aleatório
             if (includeNumber) {
                 const randomNumber = Math.floor(Math.random() * 100);
                 selectedWords.push(randomNumber.toString());
             }
 
-            // Join words with separator
+            // Junta as palavras com o separador
             const passphrase = selectedWords.join(separator);
             document.getElementById("generated-passphrase").value = passphrase;
         }
 
-        // Break Time Calculation Function
+        // Função de Cálculo de Tempo de Quebra
         function calculateBreakTime(password) {
-            const guessesPerSecond = 1e9; // 1 billion guesses per second
+            const guessesPerSecond = 1e9; // 1 bilhão de tentativas por segundo
             const charSetSize = getCharacterSetSize(password);
             const combinations = Math.pow(charSetSize, password.length);
             const seconds = combinations / guessesPerSecond;
 
             let estimation = "";
 
-            // Determine appropriate time units for estimation
+            // Determina as unidades de tempo apropriadas para a estimativa
             if (seconds < 60) {
                 estimation = `Quebrável em ${seconds.toFixed(2)} segundos.`;
             } else if (seconds < 3600) {
                 estimation = `Quebrável em ${(seconds / 60).toFixed(2)} minutos.`;
             } else if (seconds < 86400) {
                 estimation = `Quebrável em ${(seconds / 3600).toFixed(2)} horas.`;
-            } else if (seconds < 604800) { // less than a week
+            } else if (seconds < 604800) { // menos de uma semana
                 estimation = `Quebrável em ${(seconds / 86400).toFixed(2)} dias.`;
-            } else if (seconds < 2629746) { // less than a month (avg 30.44 days)
+            } else if (seconds < 2629746) { // menos de um mês (média de 30.44 dias)
                 estimation = `Quebrável em ${(seconds / 604800).toFixed(1)} semanas.`;
-            } else if (seconds < 31557600) { // less than a year
+            } else if (seconds < 31557600) { // menos de um ano
                 estimation = `Quebrável em ${(seconds / 2629746).toFixed(1)} meses.`;
-            } else if (seconds < 315576000) { // less than a decade
+            } else if (seconds < 315576000) { // menos de uma década
                 estimation = `Quebrável em ${(seconds / 31557600).toFixed(1)} anos.`;
-            } else if (seconds < 3155760000) { // less than a century
+            } else if (seconds < 3155760000) { // menos de um século
                 estimation = `Quebrável em ${(seconds / 315576000).toFixed(1)} décadas.`;
             } else {
                 estimation = "Quebrável em séculos.";
             }
 
-            // Display estimation
+            // Exibe a estimativa
             document.getElementById("time-estimation").innerText = estimation;
         }
 
-        // Character Set Size Calculation Function
+        // Função de Cálculo do Tamanho do Conjunto de Caracteres
         function getCharacterSetSize(password) {
             let charSet = 0;
-            if (/[a-z]/.test(password)) charSet += 26; // lowercase letters
-            if (/[A-Z]/.test(password)) charSet += 26; // uppercase letters
-            if (/[0-9]/.test(password)) charSet += 10; // numbers
-            if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) charSet += 32; // special characters
+            if (/[a-z]/.test(password)) charSet += 26; // letras minúsculas
+            if (/[A-Z]/.test(password)) charSet += 26; // letras maiúsculas
+            if (/[0-9]/.test(password)) charSet += 10; // números
+            if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) charSet += 32; // caracteres especiais
             return charSet;
         }
 
-        // Copy to Clipboard Function
+        // Função para Copiar para a Área de Transferência
         function copyToClipboard(elementId) {
             const element = document.getElementById(elementId);
             element.select();
@@ -549,28 +549,28 @@ if (isset($_SESSION['userID'])) {
             alert("Senha Copiada!");
         }
 
-        // Slider Styling and Value Display Function for Password Length
+        // Função de Estilização e Exibição de Valor do Controle Deslizante para Comprimento da Senha
         function showSliderValue() {
             const slider_input = document.getElementById('custom-length-slider');
             const slider_thumb = document.getElementById('custom-slider_thumb');
             const slider_line = document.getElementById('custom-slider_line');
 
             const length = slider_input.value;
-            slider_thumb.innerHTML = length;  // Update visible thumb value
+            slider_thumb.innerHTML = length;  // Atualiza o valor visível do polegar
 
             const bulletPosition = (length / slider_input.max),
                 space = slider_input.offsetWidth - slider_thumb.offsetWidth;
 
-            slider_thumb.style.left = (bulletPosition * space) + 'px';  // Align thumb to slider value
-            slider_line.style.width = (length / slider_input.max) * 100 + '%';  // Fill line with password length selection
+            slider_thumb.style.left = (bulletPosition * space) + 'px';  // Alinha o polegar ao valor do controle deslizante
+            slider_line.style.width = (length / slider_input.max) * 100 + '%';  // Preenche a linha com a seleção do comprimento da senha
 
-            document.getElementById("length-value").innerText = length + " Caracteres";  // Display password length
+            document.getElementById("length-value").innerText = length + " Caracteres";  // Exibe o comprimento da senha
 
-            // Automatically generate a new password when slider changes
+            // Gera automaticamente uma nova senha quando o controle deslizante muda
             generatePassword();
         }
 
-        // Passphrase Words Slider Value Display
+        // Exibição de Valor do Controle Deslizante de Palavras da Palavra-Passe
         function showPassphraseWordsValue() {
             const wordsSlider = document.getElementById('words-slider');
             const wordsValue = document.getElementById('words-value');
@@ -579,58 +579,57 @@ if (isset($_SESSION['userID'])) {
 
             const words = wordsSlider.value;
             wordsValue.textContent = words;
-            wordsSliderThumb.innerHTML = words;  // Update visible thumb value
+            wordsSliderThumb.innerHTML = words;  // Atualiza o valor visível do polegar
 
             const bulletPosition = (words / wordsSlider.max),
                 space = wordsSlider.offsetWidth - wordsSliderThumb.offsetWidth;
 
-            wordsSliderThumb.style.left = (bulletPosition * space) + 'px';  // Align thumb to slider value
-            wordsSliderLine.style.width = (words / wordsSlider.max) * 100 + '%';  // Fill line with word count selection
+            wordsSliderThumb.style.left = (bulletPosition * space) + 'px';  // Alinha o polegar ao valor do controle deslizante
+            wordsSliderLine.style.width = (words / wordsSlider.max) * 100 + '%';  // Preenche a linha com a seleção da contagem de palavras
 
-            // Automatically generate a new passphrase when slider changes
+            // Gera automaticamente uma nova palavra-passe quando o controle deslizante muda
             generatePassphrase();
         }
 
-        // Event Listeners Setup Function
+        // Função de Configuração dos Ouvintes de Evento
         function setupEventListeners() {
-            // Attach event listener to custom length slider
+            // Anexa o ouvinte de evento ao controle deslizante de comprimento personalizado
             const slider_input = document.getElementById('custom-length-slider');
             slider_input.addEventListener("input", showSliderValue);
 
-            // Attach event listener to words slider
+            // Anexa o ouvinte de evento ao controle deslizante de palavras
             const words_slider = document.getElementById('words-slider');
             words_slider.addEventListener("input", showPassphraseWordsValue);
 
-            // Initialize slider values
+            // Inicializa os valores dos controles deslizantes
             showSliderValue();
             showPassphraseWordsValue();
 
-            // Attach event listeners to password checkboxes to regenerate password
+            // Anexa ouvintes de evento às caixas de seleção de senha para regenerar a senha
             const passwordCheckboxes = document.querySelectorAll('#use-lowercase, #use-uppercase, #use-numbers, #use-symbols');
             passwordCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', generatePassword);
             });
 
-            // Attach event listeners to passphrase checkboxes
+            // Anexa ouvintes de evento às caixas de seleção de palavra-passe
             const passphraseCheckboxes = document.querySelectorAll('#capitalize-first, #capitalize-all, #include-number');
             passphraseCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', generatePassphrase);
             });
 
-            // Add event listener to word separator
+            // Adiciona ouvinte de evento ao separador de palavras
             const wordSeparator = document.getElementById('word-separator');
             wordSeparator.addEventListener('input', generatePassphrase);
 
-            // Initial password and passphrase generation
+            // Geração inicial de senha e palavra-passe
             generatePassword();
             generatePassphrase();
         }
 
-        // Run event listeners setup when DOM is fully loaded
+        // Executa a configuração dos ouvintes de evento quando o DOM está totalmente carregado
         document.addEventListener('DOMContentLoaded', setupEventListeners);
     </script>
 
-    <script src="./script/script.js"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="/script/scroll-reveal.js"></script>
 

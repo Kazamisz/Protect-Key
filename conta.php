@@ -1,5 +1,8 @@
 <?php
-require('./php/conta.php');
+session_start();
+require_once __DIR__ . '/php/bootstrap.php';
+require_once('php/functions.php');
+require_once('./php/conta.php');
 
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {
@@ -134,6 +137,7 @@ if (isset($_SESSION['userID'])) {
             <?php endif; ?>
 
             <form id="updateForm" action="" method="post" class="my-form">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
 
                 <!-- Informações Gerais -->
                 <div class="settings-section">
@@ -284,9 +288,12 @@ if (isset($_SESSION['userID'])) {
                         <button type="submit">Confirmar Informações</button>
                     </div>
             </form>
-            <form method="POST" onsubmit="return confirm('Tem certeza de que deseja desativar sua conta?')">
-    <button type="submit" name="deactivateAccount" class="btn btn-warning">Desativar Conta</button>
-</form>
+
+            <form class="form-button" method="POST"
+                onsubmit="return confirm('Tem certeza de que deseja desativar sua conta?')">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
+                <button type="submit" name="deactivateAccount" class="btn btn-warning">Desativar Conta</button>
+            </form>
         </div>
     </div>
 
@@ -340,6 +347,7 @@ if (isset($_SESSION['userID'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
 
+
         document.getElementById("enableTwoFactor").addEventListener("change", function () {
             document.getElementById("initialConfirmButton").style.display = this.checked ? "none" : "inline";
         });
@@ -348,6 +356,7 @@ if (isset($_SESSION['userID'])) {
             document.getElementById("qrCodeContainer").style.display = "block";
             document.getElementById("initialConfirmButton").style.display = "none";
         });
+
 
         document.getElementById('addSecurityWord').addEventListener('change', function () {
             document.getElementById('securityWordContainer').style.display = this.checked ? 'block' : 'none';
@@ -366,6 +375,7 @@ if (isset($_SESSION['userID'])) {
             }
         });
 
+
         document.getElementById('showQRCodeButton').addEventListener('click', function () {
             const qrCodeContainer = document.getElementById('qrCodeContainer');
             qrCodeContainer.style.display = 'block';
@@ -373,10 +383,12 @@ if (isset($_SESSION['userID'])) {
 
         });
 
+
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('addSecurityWord').dispatchEvent(new Event('change'));
             document.getElementById('enableTwoFactor').dispatchEvent(new Event('change'));
         });
+
         $(document).ready(function () {
             // Máscara para CPF
             $('#userCpf').on('input', function () {
@@ -391,12 +403,12 @@ if (isset($_SESSION['userID'])) {
 
         function toggleSecurityWordField() {
             var checkbox = document.getElementById('addSecurityWord');
-            var securityWordField = document.getElementById('newSecurityWordField');
+            var securityWordField = document.getElementById('securityWordContainer'); // Corrigido para securityWordContainer
 
             if (checkbox.checked) {
-                securityWordField.style.display = 'block'; // Exibe o campo de senha
+                securityWordField.style.display = 'flex'; // Use 'flex' para corresponder ao estilo PHP
             } else {
-                securityWordField.style.display = 'none'; // Esconde o campo de senha
+                securityWordField.style.display = 'none';
             }
         }
 

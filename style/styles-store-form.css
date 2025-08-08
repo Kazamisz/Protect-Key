@@ -33,7 +33,7 @@ body{
 
 table{
     margin:auto;
-    width:100%;
+    width:50vw;
     overflow:hidden;
     background-color:var(--white);
     border-radius:10px;

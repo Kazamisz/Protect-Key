@@ -3,7 +3,7 @@
 // Incluir a configuração do Mercado Pago, autoload e funções
 session_start(); // Inicia a sessão para acessar os dados do usuário logado
 $config = require_once 'config.php';
-require_once '../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once("./conectar.php");
 
 use MercadoPago\Client\Payment\PaymentClient;
