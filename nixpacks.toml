@@ -1,0 +1,10 @@
+# nixpacks.toml
+
+# Diz à Railway para instalar pacotes do sistema
+[phases.setup]
+# Lista de pacotes do Nix que queremos. 'apacheHttpd' é o servidor Apache.
+nixPkgs = ["...", "apacheHttpd"] 
+
+# Define o comando de início da aplicação, sobrepondo o Procfile se necessário
+[start]
+cmd = "vendor/bin/heroku-php-apache2 public/"
