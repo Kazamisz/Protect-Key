@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/php/bootstrap.php';
-require("./php/planos.php");
+require_once __DIR__ . "/../php/planos.php";
 
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {

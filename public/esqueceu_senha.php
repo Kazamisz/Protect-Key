@@ -1,7 +1,10 @@
 <?php
+
 session_start();
+
 require_once __DIR__ . '/php/bootstrap.php';
-require("./php/esqueceu_senha.php");
+require_once __DIR__ . '/../php/esqueceu_senha.php';
+
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {
     $userId = $_SESSION['userID']; // Obtém o ID do usuário da sessão

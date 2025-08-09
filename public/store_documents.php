@@ -1,5 +1,5 @@
 <?php
-require('./php/store_documents.php');
+require_once __DIR__ . '/../php/store_documents.php';
 
 $userID = $_SESSION['userID'];
 

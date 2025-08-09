@@ -1,8 +1,8 @@
 <?php
 session_start();
 require_once __DIR__ . '/php/bootstrap.php';
-require_once('php/functions.php');
-require_once('./php/conta.php');
+require_once __DIR__ . '/../php/functions.php';
+require_once __DIR__ . '/../php/conta.php';
 
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {

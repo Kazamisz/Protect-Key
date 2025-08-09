@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         <p>
             Por favor, conte-nos o motivo da sua decisão para que possamos melhorar nossos serviços.
         </p>
-        <form class="feedback-form" action="./php/salvar_feedback.php" method="POST">
+        <form class="feedback-form" action="<?php echo __DIR__ . '/../php/salvar_feedback.php'; ?>" method="POST">
             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($userID); ?>">
             <label for="reason">Por que você desativou sua conta?</label>
             <select name="reason" id="reason" required>
