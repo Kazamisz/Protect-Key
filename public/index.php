@@ -676,8 +676,8 @@ if (isset($_SESSION['userID'])) {
 
 
     <script src="https://unpkg.com/scrollreveal"></script>
-    <script src="/script/scroll-reveal.js"></script>
-    <script src="/script/preCarregamento.js"></script>
+    <script src="./script/scroll-reveal.js"></script>
+    <script src="./script/preCarregamento.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
