@@ -1,10 +1,10 @@
 # nixpacks.toml
 
-# Diz à Railway para instalar pacotes do sistema
 [phases.setup]
-# Lista de pacotes do Nix que queremos. 'apacheHttpd' é o servidor Apache.
+# Mantém os pacotes padrão (como o PHP), mas adiciona o Apache.
 nixPkgs = ["...", "apacheHttpd"] 
+# E o mais importante: remove o Nginx padrão para evitar o conflito.
+nixPkgsToRemove = ["nginx"]
 
-# Define o comando de início da aplicação, sobrepondo o Procfile se necessário
 [start]
 cmd = "vendor/bin/heroku-php-apache2 public/"
