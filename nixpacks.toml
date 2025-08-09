@@ -1,10 +1,8 @@
 # nixpacks.toml
 
 [phases.setup]
-# Mantém os pacotes padrão (como o PHP), mas adiciona o Apache.
-nixPkgs = ["...", "apacheHttpd"] 
-# E o mais importante: remove o Nginx padrão para evitar o conflito.
-nixPkgsToRemove = ["nginx"]
+# contém APENAS o que é necessário, sem colisão
+nixPkgs = ["php", "composer", "apacheHttpd"]
 
 [start]
 cmd = "vendor/bin/heroku-php-apache2 public/"
