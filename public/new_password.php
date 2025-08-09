@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/php/bootstrap.php';
-require('./php/conectar.php');
-require("./php/functions.php");
+require_once __DIR__ . '/../php/conectar.php';
+require_once __DIR__ . "/../php/functions.php";
 
 // Inicializar variáveis para mensagens de erro e sucesso
 $errorMessage = '';

@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/php/bootstrap.php';
-require('./php/gerenciador.php');
+require_once __DIR__ . '/../php/gerenciador.php';
 
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {

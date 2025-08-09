@@ -1,5 +1,5 @@
 <?php
-require('./php/logs.php');
+require_once __DIR__ . '/../php/logs.php';
 
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {

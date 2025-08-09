@@ -1,7 +1,7 @@
 <?php
 session_start();
-require("php/conectar.php");
-require("php/functions.php");
+require_once __DIR__ . "/../php/conectar.php";
+require_once __DIR__ . "/../php/functions.php";
 
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {

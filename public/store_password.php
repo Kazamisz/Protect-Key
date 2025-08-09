@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/php/bootstrap.php';
-require('./php/store_password.php');
+require_once __DIR__ . '/../php/store_password.php';
 
 $userID = $_SESSION['userID'] ?? null;
 
