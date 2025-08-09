@@ -1,41 +1,33 @@
 <?php
+// conectar.php — conexão segura usando variáveis de ambiente
 
-// Inclui o bootstrap que carrega o Dotenv de forma segura
-require_once __DIR__ . '/bootstrap.php';
+// Carregue .env no local, se necessário (via vlucas/phpdotenv)
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+    $dotenv->load();
+}
 
-// Pega as credenciais do ambiente (do .env localmente, ou da Railway em produção)
-$dbHost = getenv('DB_HOST');
-$dbPort = getenv('DB_PORT'); // Essencial para a conexão na Railway
-$dbName = getenv('DB_DATABASE');
-$dbUser = getenv('DB_USERNAME');
-$dbPass = getenv('DB_PASSWORD');
+// Prioriza suas variáveis definidas (DB_*), depois as internas do Railway (MYSQL*), depois valores padrão
+$host = getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: '127.0.0.1';
+$port = getenv('DB_PORT') ?: getenv('MYSQLPORT') ?: '3306';
+$db = getenv('DB_DATABASE') ?: getenv('MYSQLDATABASE') ?: 'railway';
+$user = getenv('DB_USERNAME') ?: getenv('MYSQLUSER') ?: 'root';
+$pass = getenv('DB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: '';
 
-// --- CÓDIGO DE DEBUG TEMPORÁRIO ---
-// Este código nos ajuda a ver quais variáveis estão sendo usadas.
-echo "--- DEBUG DE CONEXÃO ---<br>";
-echo "Host: " . htmlspecialchars($dbHost) . "<br>";
-echo "Porta: " . htmlspecialchars($dbPort) . "<br>";
-echo "Banco: " . htmlspecialchars($dbName) . "<br>";
-echo "Usuário: " . htmlspecialchars($dbUser) . "<br>";
-echo "Senha Existe: " . (empty($dbPass) ? 'Não' : 'Sim') . "<br>";
-echo "--- FIM DO DEBUG ---<br><br>";
-// --- FIM DO CÓDIGO DE DEBUG ---
+$dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
 
 try {
-    // Constrói a string de conexão (DSN) corretamente, incluindo a porta.
-    $dsn = "mysql:host={$dbHost};port={$dbPort};dbname={$dbName};charset=utf8mb4";
-
-    // Opções do PDO para melhor manuseio de erros e resultados
-    $options = [
+    $pdo = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
-    ];
-
-    // Cria a instância do PDO
-    $pdo = new PDO($dsn, $dbUser, $dbPass, $options);
-
+    ]);
 } catch (PDOException $e) {
-    // Em caso de erro, exibe uma mensagem clara e encerra o script.
-    die("❌ Erro de conexão com o banco de dados: " . $e->getMessage());
+    // Loga erro sem expor detalhes ao usuário final
+    error_log('Erro de conexão ao banco: ' . $e->getMessage());
+    http_response_code(500);
+    exit('Erro interno no servidor.');
 }
+
+// Retorna objeto PDO pra uso no seu app
+return $pdo;
