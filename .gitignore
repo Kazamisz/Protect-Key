@@ -1,1 +1,19 @@
+# Arquivo de segredos e configurações de ambiente
 .env
+
+# Pastas de dependências gerenciadas pelo Composer
+# Elas são recriadas com o comando "composer install"
+/vendor/
+/lib/
+
+# Arquivos de log que podem ser gerados durante o desenvolvimento
+*.log
+logs/
+
+# Arquivos de configuração de IDEs/Editores populares
+.vscode/
+.idea/
+
+# Arquivos de sistema operacional (macOS e Windows)
+.DS_Store
+Thumbs.db
