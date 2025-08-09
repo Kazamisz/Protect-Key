@@ -1,8 +1,19 @@
-# nixpacks.toml
-
 [phases.setup]
-# contém APENAS o que é necessário, sem colisão
-nixPkgs = ["php", "composer", "apacheHttpd"]
+# Constrói o devShell do flake e deixa o resultado em /tmp/flake-env/result
+cmds = [
+  # build do flake (habilita nix-command e flakes)
+  "nix --extra-experimental-features 'nix-command flakes' build .#devShells.x86_64-linux.default",
+  "rm -rf /tmp/flake-env || true",
+  "mkdir -p /tmp/flake-env",
+  "mv result /tmp/flake-env/result"
+]
+
+[phases.install]
+# Usa o composer que está dentro do resultado do flake
+cmds = [
+  "PATH=/tmp/flake-env/result/bin:$PATH /tmp/flake-env/result/bin/composer install --no-dev --optimize-autoloader"
+]
 
 [start]
-cmd = "vendor/bin/heroku-php-apache2 public/"
+# Start do serviço - garante que o PATH do flake esteja no começo
+cmd = "PATH=/tmp/flake-env/result/bin:$PATH vendor/bin/heroku-php-apache2 public/"
