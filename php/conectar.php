@@ -2,6 +2,22 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
+// Adicione estas linhas para depuração
+echo "--- INICIANDO DEBUG DE CONEXÃO ---<br>";
+echo "Host: " . getenv('DB_HOST') . "<br>";
+echo "Porta: " . getenv('DB_PORT') . "<br>";
+echo "Usuário: " . getenv('DB_USERNAME') . "<br>";
+echo "Banco: " . getenv('DB_DATABASE') . "<br>";
+echo "--- FIM DO DEBUG ---<br>";
+
+// Sua linha de conexão original fica logo depois
+try {
+    $pdo = new PDO(...);
+    // ...
+} catch (PDOException $e) {
+    // ...
+}
+
 /**
  * Classe para gerenciar conexão com banco de dados
  * Implementa padrão Singleton para garantir uma única conexão
