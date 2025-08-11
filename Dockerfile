@@ -1,11 +1,14 @@
 # Imagem oficial do PHP com Apache
 FROM php:8.3-apache
 
-# Instala dependências de sistema (git, unzip) e extensões PHP (zip, pdo_mysql)
+# Instala dependências de sistema (git, unzip, libzip-dev) e extensões PHP (zip, pdo_mysql)
+# Limpa o cache do apt-get para reduzir o tamanho da imagem
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
-    && docker-php-ext-install zip pdo_mysql
+    libzip-dev \
+ && docker-php-ext-install zip pdo_mysql \
+ && rm -rf /var/lib/apt/lists/*
 
 # Habilita o mod_rewrite do Apache, essencial para roteamento
 RUN a2enmod rewrite
