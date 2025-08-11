@@ -1,11 +1,14 @@
 # Imagem oficial do PHP com Apache
 FROM php:8.3-apache
 
+# Instala dependências de sistema (git, unzip) e extensões PHP (zip, pdo_mysql)
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    && docker-php-ext-install zip pdo_mysql
+
 # Habilita o mod_rewrite do Apache, essencial para roteamento
 RUN a2enmod rewrite
-
-# Instala extensões necessárias
-RUN docker-php-ext-install pdo pdo_mysql
 
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -16,7 +19,7 @@ COPY . /var/www/html
 # Define a pasta public como root do Apache de forma mais específica
 RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' /etc/apache2/sites-available/000-default.conf
 
-# Instala dependências do Composer (se houver composer.json)
+# Instala dependências do Composer (agora com as ferramentas necessárias)
 WORKDIR /var/www/html
 RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader; fi
 
