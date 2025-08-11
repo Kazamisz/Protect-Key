@@ -1,9 +1,8 @@
 <?php
 require_once __DIR__ . '/../vendor/autoload.php';
-require("conectar.php");
 
 // Importa as classes do PHPMailer
-use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;  
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
@@ -28,80 +27,73 @@ function decryptPassword($encrypted, $key, $cipher, $iv_length)
 }
 
 
-// Função para obter o plano do usuário
+// Função para obter o plano do usuário (Sintaxe PDO)
 function getUserPlan($userID, $conn)
 {
-    // Preparar a consulta
-    $stmt = $conn->prepare("SELECT plano FROM users WHERE userID = ? LIMIT 1");
-
-    // Verificar se a preparação foi bem-sucedida
-    if ($stmt === false) {
-        die('Erro na preparação da consulta: ' . $conn->error);
+    if (!$conn || !$userID) {
+        return 'Não logado';
     }
-
-    // Vincular o parâmetro
-    $stmt->bind_param('i', $userID);
-
-    // Executar a consulta
-    $stmt->execute();
-
-    // Buscar o resultado
-    $result = $stmt->get_result()->fetch_assoc();
-
-    // Verificar se foi encontrado um plano
-    if ($result) {
-        return $result['plano'];
-    } else {
-        return 'Nenhum plano encontrado'; // Valor padrão se nenhum plano for encontrado
+    try {
+        $stmt = $conn->prepare("SELECT plano FROM users WHERE userID = ? LIMIT 1");
+        $stmt->execute([$userID]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['plano'] : 'Nenhum plano encontrado';
+    } catch (PDOException $e) {
+        error_log("Erro em getUserPlan: " . $e->getMessage());
+        return 'Erro ao buscar plano';
     }
 }
 
-// Função para obter as informações do usuário
+// Função para obter as informações do usuário (Sintaxe PDO)
 function getUserInfo($conn, $userID)
 {
-    $sql = "SELECT userNome, userEmail, userCpf, userTel, userEstato, securityWord, enableTwoFactor, dicaSenha, secret FROM users WHERE userID = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $userID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($row = $result->fetch_assoc()) {
-            return $row;
-        }
-        $stmt->close();
+    if (!$conn || !$userID) {
+        return null;
     }
-    return null;
+    try {
+        $sql = "SELECT userNome, userEmail, userCpf, userTel, userEstato, securityWord, enableTwoFactor, dicaSenha, secret FROM users WHERE userID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$userID]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Erro em getUserInfo: " . $e->getMessage());
+        return null;
+    }
 }
 
-// Função para obter a quantidade de senhas salvas pelo usuário
+// Função para obter a quantidade de senhas salvas pelo usuário (Sintaxe PDO)
 function getPasswordCount($userID, $conn)
 {
-    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM gerenciadorsenhas.passwords WHERE user_id = ?");
-
-    if ($stmt === false) {
-        die('Erro na preparação da consulta: ' . $conn->error);
+    if (!$conn || !$userID) {
+        return 0;
     }
-
-    $stmt->bind_param('i', $userID);
-    $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
-
-    return $result['total'] ?? 0;
+    try {
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM passwords WHERE user_id = ?");
+        $stmt->execute([$userID]);
+        return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        error_log("Erro em getPasswordCount: " . $e->getMessage());
+        return 0;
+    }
 }
 
-// Função para gerar um token de 6 dígitos
+// Função para gerar um token de 6 dígitos (Sintaxe PDO)
 function generateToken($conn)
 {
-    do {
-        $token = rand(100000, 999999);
-        $sql = "SELECT userID FROM gerenciadorsenhas.users WHERE userToken = ?";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("s", $token);
-            $stmt->execute();
-            $stmt->store_result();
-        }
-    } while ($stmt->num_rows > 0);
-    $stmt->close();
-    return $token;
+    if (!$conn) return rand(100000, 999999);
+    try {
+        do {
+            $token = rand(100000, 999999);
+            $sql = "SELECT COUNT(*) FROM users WHERE userToken = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$token]);
+            $count = $stmt->fetchColumn();
+        } while ($count > 0);
+        return $token;
+    } catch (PDOException $e) {
+        error_log("Erro em generateToken: " . $e->getMessage());
+        return rand(100000, 999999); // Fallback
+    }
 }
 
 // Função principal para enviar o e-mail
@@ -113,30 +105,31 @@ function sendEmail($toEmail, $subject, $bodyContent, $altBodyContent = '')
         // Configurações do servidor SMTP
         $mail->CharSet = "UTF-8";
         $mail->isSMTP();
-        $mail->Host = $_ENV['MAIL_HOST']; // Endereço do servidor SMTP
+        $mail->Host = getenv('MAIL_HOST');
         $mail->SMTPAuth = true;
-        $mail->Username = $_ENV['MAIL_USERNAME']; // Seu nome de usuário do SMTP
-        $mail->Password = $_ENV['MAIL_PASSWORD']; // Sua senha do SMTP
+        $mail->Username = getenv('MAIL_USERNAME');
+        $mail->Password = getenv('MAIL_PASSWORD');
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = $_ENV['MAIL_PORT'];
+        $mail->Port = getenv('MAIL_PORT');
 
         // Configurações do e-mail
-        $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], 'Segurança');
+        $mail->setFrom(getenv('MAIL_FROM_ADDRESS'), 'Segurança');
         $mail->addAddress($toEmail);
 
         // Conteúdo do e-mail
-        $mail->isHTML(true); // Definir o formato do e-mail como HTML
+        $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body = $bodyContent;
-        $mail->AltBody = $altBodyContent ?: strip_tags($bodyContent); // Alternativo para clientes sem suporte a HTML
+        $mail->AltBody = $altBodyContent ?: strip_tags($bodyContent);
 
-        // Envia o e-mail
         $mail->send();
-        return ''; // Retorna vazio em caso de sucesso
+        return '';
     } catch (Exception $e) {
-        return "Erro ao enviar o e-mail: {$mail->ErrorInfo}"; // Retorna mensagem de erro
+        return "Erro ao enviar o e-mail: {$mail->ErrorInfo}";
     }
 }
+
+// ... (outras funções de envio de email permanecem as mesmas) ...
 
 // Função para enviar o Token por e-mail
 function sendTokenEmail($toEmail, $token)
@@ -223,63 +216,47 @@ function sendDicaSenhaEmail($toEmail, $dicaSenha)
     return sendEmail($toEmail, $subject, $bodyContent, $altBodyContent);
 }
 
-
 function getUserIP()
 {
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         return $_SERVER['HTTP_CLIENT_IP'];
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        // Pode haver vários IPs aqui
         $ipList = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-        return trim($ipList[0]); // Retorna o primeiro IP da lista
+        return trim($ipList[0]);
     } else {
         $ip = $_SERVER['REMOTE_ADDR'];
-        // Verifica se é o localhost e altera se necessário
         return ($ip === '::1' || $ip === '127.0.0.1') ? 'Localhost' : $ip;
     }
 }
 
-
-function logAction($conn, $userID, $actionType, $description)
+// (Sintaxe PDO)
+function log_action($conn, $userID, $actionType, $description)
 {
-    $userIp = getUserIP(); // Captura o IP do usuário
-    $sql = "INSERT INTO gerenciadorsenhas.logs (user_id, action_type, description, ip_address, created_at) VALUES (?, ?, ?, ?, NOW())";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("isss", $userID, $actionType, $description, $userIp);
-        $stmt->execute();
-        if ($stmt->error) {
-            error_log("Erro ao inserir log: " . $stmt->error);
-        }
-        $stmt->close();
-    } else {
-        error_log("Erro ao preparar a declaração SQL: " . $conn->error);
+    if (!$conn) return;
+    try {
+        $userIp = getUserIP();
+        $sql = "INSERT INTO logs (user_id, action_type, description, ip_address, created_at) VALUES (?, ?, ?, ?, NOW())";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$userID, $actionType, $description, $userIp]);
+    } catch (PDOException $e) {
+        error_log("Erro ao inserir log: " . $e->getMessage());
     }
 }
 
-
-// Função para verificar se o usuário tem a role de admin
+// Função para verificar se o usuário tem a role de admin (Sintaxe PDO)
 function checkAdminRole($conn, $userID)
 {
-    $role = ''; // Inicializar a variável para evitar referência indefinida
-
-    // Preparar a consulta SQL
-    $sql = "SELECT role FROM users WHERE userID = ?";
-
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("i", $userID);
-        $stmt->execute();
-        $stmt->bind_result($role);
-        $stmt->fetch();
-        $stmt->close();
-
-        // Verificar se a role é "admin"
-        if ($role === 'admin') {
-            return true;
-        } else {
-            return false;
-        }
+    if (!$conn || !$userID) {
+        return false;
     }
-    else {
+    try {
+        $sql = "SELECT role FROM users WHERE userID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$userID]);
+        $role = $stmt->fetchColumn();
+        return ($role === 'admin');
+    } catch (PDOException $e) {
+        error_log("Erro em checkAdminRole: " . $e->getMessage());
         return false;
     }
 }
@@ -287,20 +264,13 @@ function checkAdminRole($conn, $userID)
 // Função para validar o CPF, mesmo com formatação
 function validarCPF($userCpf)
 {
-    // Remove caracteres especiais (pontos, traços, etc.)
-    $userCpf = preg_replace('/[^0-9]/', '', $userCpf); // Remove tudo que não for número
-
-    // Verifica se o CPF tem 11 dígitos
+    $userCpf = preg_replace('/[^0-9]/', '', $userCpf);
     if (strlen($userCpf) != 11) {
         return false;
     }
-
-    // Verifica se todos os dígitos são iguais (exemplo: 111.111.111-11)
     if (preg_match('/(\d)\1{10}/', $userCpf)) {
         return false;
     }
-
-    // Calcula os dígitos verificadores
     for ($t = 9; $t < 11; $t++) {
         for ($d = 0, $c = 0; $c < $t; $c++) {
             $d += $userCpf[$c] * (($t + 1) - $c);
@@ -310,7 +280,6 @@ function validarCPF($userCpf)
             return false;
         }
     }
-
     return true;
 }
 
@@ -326,19 +295,22 @@ function generateUniqueCode($length = 10)
     return $randomString;
 }
 
-// Função para verificar se o e-mail ou CPF ou o Tel já estão registrados
+// Função para verificar se o e-mail ou CPF ou o Tel já estão registrados (Sintaxe PDO)
 function isAlreadyRegistered($conn, $field, $value)
 {
-    $sql = "SELECT userID FROM gerenciadorsenhas.users WHERE $field = ?";
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("s", $value);
-        $stmt->execute();
-        $stmt->store_result();
-        $result = $stmt->num_rows > 0; // Retorna true se já existe no banco
-        $stmt->close();
-        return $result;
+    $allowed_fields = ['userEmail', 'userCpf', 'userTel'];
+    if (!$conn || !in_array($field, $allowed_fields)) {
+        return false; // Campo não permitido para busca
     }
-    return false;
+    try {
+        $sql = "SELECT COUNT(*) FROM users WHERE `$field` = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$value]);
+        return $stmt->fetchColumn() > 0;
+    } catch (PDOException $e) {
+        error_log("Erro em isAlreadyRegistered: " . $e->getMessage());
+        return false;
+    }
 }
 
 // Função para gerar um token CSRF

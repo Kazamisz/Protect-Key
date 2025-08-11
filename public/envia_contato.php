@@ -1,9 +1,9 @@
 <?php
 session_start(); // Inicia a sessão para acessar os dados do usuário logado
 
-require_once __DIR__ . '/php/bootstrap.php';
+require_once __DIR__ . '/../php/bootstrap.php';
 require_once __DIR__ . "/../php/functions.php";
-require_once __DIR__ . "/../php/conectar.php";
+$conn = require_once __DIR__ . "/../php/conectar.php";
 
 $successMessage = '';
 $errorMessage = '';
@@ -218,7 +218,7 @@ if (isset($_GET['success'])) {
             <div class="link-boxes">
                 <ul class="box">
                     <li class="link_name">Companhia</li>
-                    <li><a href="#">Página Inicial</a></li>
+                    <li><a href="./index.php">Página Inicial</a></li>
                     <li><a href="./register.php">Começar Agora</a></li>
                     <li><a href="./planos.php">Planos</a></li>
                     <li><a href="./envia_contato.php">Entrar em Contato</a></li>
@@ -226,9 +226,8 @@ if (isset($_GET['success'])) {
                 <ul class="box">
                     <li class="link_name">Serviços</li>
                     <li><a href="./store_password.php">Gerenciar Senhas</a></li>
-                    <li><a href="./store_password.php">Gerar uma Senha</a></li>
+                    <li><a href="./gerador_senha.php">Gerar uma Senha</a></li>
                     <li><a href="./store_password.php">Criar uma Senha</a></li>
-                    <li><a href="./store_password.php">Inserir um Documento</a></li>
                 </ul>
                 <ul class="box">
                     <li class="link_name">Conta</li>
@@ -245,7 +244,7 @@ if (isset($_GET['success'])) {
         </div>
         <div class="bottom-details">
             <div class="bottom_text">
-                <span class="copyright_text">Copyright © 2024 <a href="#">Protect Key</a>Todos os direitos
+                <span class="copyright_text">Copyright © 2024 <a href="../LICENSE">Protect Key</a>Todos os direitos
                     reservados.</span>
             </div>
         </div>

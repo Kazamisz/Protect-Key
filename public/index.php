@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../php/bootstrap.php';
-require_once __DIR__ . '/../php/conectar.php';
+$conn = require_once __DIR__ . '/../php/conectar.php';
 require_once __DIR__ . '/../php/functions.php';
 require_once __DIR__ . '/../php/preference.php';
 
@@ -148,7 +148,7 @@ if (isset($_SESSION['userID'])) {
                     <div class="hero-buttons">
                         <?php if (isset($_SESSION['userNome'])): ?>
                             <a href="store_password.php" class="btn btn-primary">Salvar Senha</a>
-                            <a href="planos.php" class="btn btn-secondary" >Ver planos e preços</a>
+                            <a href="planos.php" class="btn btn-secondary">Ver planos e preços</a>
                         <?php else: ?>
                             <a href="register.php" class="btn btn-primary">Iniciar um teste gratuito</a>
                             <a href="planos.php" class="btn btn-secondary">Ver planos e preços</a>
@@ -236,39 +236,39 @@ if (isset($_SESSION['userID'])) {
                                     stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
                                     stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
                                     font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                                        <g transform="scale(5.12,5.12)">
-                                            <path
-                                                d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
+                                    <g transform="scale(5.12,5.12)">
+                                        <path
+                                            d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
                                             </path>
                                         </g>
                                     </g>
-                            </svg> Acesso Ilimitado</li>
+                                </svg> Acesso Ilimitado</li>
                         <li><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20"
                                 viewBox="0,0,256,256">
                                 <g fill="#FFFFFF" fill-rule="nonzero" stroke="none" stroke-width="1"
                                     stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
                                     stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
                                     font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                                        <g transform="scale(5.12,5.12)">
-                                            <path
-                                                d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
+                                    <g transform="scale(5.12,5.12)">
+                                        <path
+                                            d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
                                             </path>
                                         </g>
                                     </g>
-                            </svg> Sincronização em Tempo Real</li>
+                                </svg> Sincronização em Tempo Real</li>
                         <li><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20"
                                 viewBox="0,0,256,256">
                                 <g fill="#FFFFFF" fill-rule="nonzero" stroke="none" stroke-width="1"
                                     stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
                                     stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
                                     font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                                        <g transform="scale(5.12,5.12)">
-                                            <path
-                                                d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
+                                    <g transform="scale(5.12,5.12)">
+                                        <path
+                                            d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
                                             </path>
                                         </g>
                                     </g>
-                            </svg> Compatível com Dispositivos Desktop</li>
+                                </svg> Compatível com Dispositivos Desktop</li>
                     </ul>
                     <p>• Não importa onde esteja, você terá Acesso às suas Senhas Sempre que Precisar.</p>
                 </div>
@@ -285,39 +285,39 @@ if (isset($_SESSION['userID'])) {
                                     stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
                                     stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
                                     font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                                        <g transform="scale(5.12,5.12)">
-                                            <path
-                                                d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
+                                    <g transform="scale(5.12,5.12)">
+                                        <path
+                                            d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
                                             </path>
                                         </g>
                                     </g>
-                            </svg> Geração de Senhas</li>
+                                </svg> Geração de Senhas</li>
                         <li><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20"
                                 viewBox="0,0,256,256">
                                 <g fill="#FFFFFF" fill-rule="nonzero" stroke="none" stroke-width="1"
                                     stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
                                     stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
                                     font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                                        <g transform="scale(5.12,5.12)">
-                                            <path
-                                                d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
+                                    <g transform="scale(5.12,5.12)">
+                                        <path
+                                            d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
                                             </path>
                                         </g>
                                     </g>
-                            </svg> Armazenamento Criptografado</li>
+                                </svg> Armazenamento Criptografado</li>
                         <li><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20"
                                 viewBox="0,0,256,256">
                                 <g fill="#FFFFFF" fill-rule="nonzero" stroke="none" stroke-width="1"
                                     stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10"
                                     stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none"
                                     font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                                        <g transform="scale(5.12,5.12)">
-                                            <path
-                                                d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
+                                    <g transform="scale(5.12,5.12)">
+                                        <path
+                                            d="M41.9375,8.625c-0.66406,0.02344 -1.27344,0.375 -1.625,0.9375l-18.8125,28.78125l-12.1875,-10.53125c-0.52344,-0.54297 -1.30859,-0.74609 -2.03125,-0.51953c-0.71875,0.22266 -1.25391,0.83203 -1.37891,1.57422c-0.125,0.74609 0.17578,1.49609 0.78516,1.94531l13.9375,12.0625c0.4375,0.37109 1.01563,0.53516 1.58203,0.45313c0.57031,-0.08594 1.07422,-0.41016 1.38672,-0.89062l20.09375,-30.6875c0.42969,-0.62891 0.46484,-1.44141 0.09375,-2.10547c-0.37109,-0.66016 -1.08594,-1.05469 -1.84375,-1.01953z">
                                             </path>
                                         </g>
                                     </g>
-                            </svg>Controle e Alteração de Senhas Ilimitado</li>
+                                </svg>Controle e Alteração de Senhas Ilimitado</li>
                     </ul>
                     <p>• Armazene a Quantidade de Senhas que Precisar! Teste nossa Geração de Senhas e o Controle de
                         Senhas.
@@ -649,9 +649,8 @@ if (isset($_SESSION['userID'])) {
                 <ul class="box">
                     <li class="link_name">Serviços</li>
                     <li><a href="./store_password.php">Gerenciar Senhas</a></li>
-                    <li><a href="./store_password.php">Gerar uma Senha</a></li>
+                    <li><a href="./gerador_senha.php">Gerar uma Senha</a></li>
                     <li><a href="./store_password.php">Criar uma Senha</a></li>
-                    <li><a href="./store_password.php">Inserir um Documento</a></li>
                 </ul>
                 <ul class="box">
                     <li class="link_name">Conta</li>
@@ -668,18 +667,16 @@ if (isset($_SESSION['userID'])) {
         </div>
         <div class="bottom-details">
             <div class="bottom_text">
-                <span class="copyright_text">Copyright © 2024 <a href="#">Protect Key</a>Todos os direitos
+                <span class="copyright_text">Copyright © 2024 <a href="../LICENSE">Protect Key</a>Todos os direitos
                     reservados.</span>
             </div>
         </div>
     </footer>
 
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./script/preCarregamento.js"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="./script/scroll-reveal.js"></script>
-    <script src="./script/preCarregamento.js"></script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
