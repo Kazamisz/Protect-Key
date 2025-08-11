@@ -13,6 +13,9 @@ RUN apt-get update && apt-get install -y \
 # Habilita o mod_rewrite do Apache, essencial para roteamento
 RUN a2enmod rewrite
 
+# Adiciona a diretiva ServerName para suprimir o aviso AH00558
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 # Instala Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
