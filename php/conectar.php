@@ -1,6 +1,4 @@
 <?php
-// conectar.php — conexão segura usando variáveis de ambiente
-
 // As variáveis de ambiente são carregadas pelo bootstrap.php.
 // O código abaixo define as credenciais corretas para o ambiente local ou de produção.
 
