@@ -1,18 +1,25 @@
 <?php
 // conectar.php — conexão segura usando variáveis de ambiente
 
-// Carregue .env no local, se necessário (via vlucas/phpdotenv)
-if (file_exists(__DIR__ . '/../.env')) {
-    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
-    $dotenv->load();
-}
+// As variáveis de ambiente são carregadas pelo bootstrap.php.
+// O código abaixo define as credenciais corretas para o ambiente local ou de produção.
 
-// Prioriza suas variáveis definidas (DB_*), depois as internas do Railway (MYSQL*), depois valores padrão
-$host = getenv('DB_HOST') ?: getenv('MYSQLHOST') ?: '127.0.0.1';
-$port = getenv('DB_PORT') ?: getenv('MYSQLPORT') ?: '3306';
-$db = getenv('DB_DATABASE') ?: getenv('MYSQLDATABASE') ?: 'railway';
-$user = getenv('DB_USERNAME') ?: getenv('MYSQLUSER') ?: 'root';
-$pass = getenv('DB_PASSWORD') ?: getenv('MYSQLPASSWORD') ?: '';
+if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1')) {
+    // --- AMBIENTE LOCAL ---
+    $host = 'localhost';
+    $port = '3306';
+    $db   = 'gerenciadorsenhas';
+    $user = 'root';
+    $pass = 'etec2024';
+} else {
+    // --- AMBIENTE DE PRODUÇÃO (RAILWAY) ---
+    // Assume que bootstrap.php carregou as variáveis de ambiente...
+    $host = getenv('MYSQLHOST');
+    $port = getenv('MYSQLPORT');
+    $db   = getenv('MYSQLDATABASE');
+    $user = getenv('MYSQLUSER');
+    $pass = getenv('MYSQLPASSWORD');
+}
 
 $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";
 
@@ -23,7 +30,7 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
 } catch (PDOException $e) {
-    // Loga erro sem expor detalhes ao usuário final
+    // Loga erro sem expor detalhes ao usuário final (versão segura)
     error_log('Erro de conexão ao banco: ' . $e->getMessage());
     http_response_code(500);
     exit('Erro interno no servidor.');
