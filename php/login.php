@@ -45,10 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errorMessage = 'Identificador e senha são obrigatórios.';
     } else {
         try {
-            // Prepare the SQL query to find the user by token or CPF
-            $sql = "SELECT userID, userNome, userPassword, userEmail, userEstato, enableTwoFactor, secret FROM users WHERE userToken = :ident OR userCpf = :ident";
+
+            // Corrigido: usar parâmetros diferentes para userToken e userCpf
+            $sql = "SELECT userID, userNome, userPassword, userEmail, userEstato, enableTwoFactor, secret FROM users WHERE userToken = :identToken OR userCpf = :identCpf";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':ident', $userIdent);
+            $stmt->bindParam(':identToken', $userIdent);
+            $stmt->bindParam(':identCpf', $userIdent);
             $stmt->execute();
 
             $user = $stmt->fetch(PDO::FETCH_ASSOC);

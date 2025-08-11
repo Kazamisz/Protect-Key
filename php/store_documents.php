@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($userID)) {
             $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
             if ($stmt->execute()) {
                 $successMessage = 'Documento deletado com sucesso!';
-                log_action($userID, 'Deleção de Documento', "Documento ID {$documentId} deletado.");
+                log_action($conn, $userID, 'Deleção de Documento', "Documento ID {$documentId} deletado.");
             } else {
                 $errorMessage = 'Erro ao deletar o documento.';
             }
@@ -132,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($userID)) {
 
                             if ($stmt->execute()) {
                                 $successMessage = 'Documento adicionado com sucesso!';
-                                log_action($userID, 'Adição de Documento', "Documento '{$documentName}' adicionado.");
+                                log_action($conn, $userID, 'Adição de Documento', "Documento '{$documentName}' adicionado.");
                             } else {
                                 $errorMessage = 'Erro ao adicionar documento.';
                             }
@@ -159,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($userID)) {
 
                         if ($stmt->execute()) {
                             $successMessage = 'Documento atualizado com sucesso!';
-                             log_action($userID, 'Atualização de Documento', "Documento ID {$documentId} atualizado.");
+                             log_action($conn, $userID, 'Atualização de Documento', "Documento ID {$documentId} atualizado.");
                         } else {
                             $errorMessage = 'Erro ao atualizar documento.';
                         }

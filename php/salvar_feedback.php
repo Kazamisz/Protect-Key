@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Iniciar transação
-    $conn->begin_transaction();
+    $conn->beginTransaction();
 
     try {
         // Log do feedback antes da exclusão
@@ -30,22 +30,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($tablesToDeleteFrom as $table) {
             $sql = "DELETE FROM `$table` WHERE `user_id` = ?";
             $stmt = $conn->prepare($sql);
-            if (!$stmt) throw new Exception("Erro ao preparar a exclusão para a tabela $table: " . $conn->error);
-            $stmt->bind_param("i", $userID);
-            if (!$stmt->execute()) throw new Exception("Erro ao executar a exclusão para a tabela $table: " . $stmt->error);
-            $stmt->close();
+            if (!$stmt) throw new Exception("Erro ao preparar a exclusão para a tabela $table.");
+            if (!$stmt->execute([$userID])) throw new Exception("Erro ao executar a exclusão para a tabela $table.");
         }
 
         // Finalmente, excluir o usuário da tabela principal
-        $sql = "DELETE FROM `users` WHERE `userID` = ?";
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) throw new Exception("Erro ao preparar a exclusão do usuário: " . $conn->error);
-        $stmt->bind_param("i", $userID);
-        if (!$stmt->execute()) throw new Exception("Erro ao executar a exclusão do usuário: " . $stmt->error);
-        $stmt->close();
+    $sql = "DELETE FROM `users` WHERE `userID` = ?";
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) throw new Exception("Erro ao preparar a exclusão do usuário.");
+    if (!$stmt->execute([$userID])) throw new Exception("Erro ao executar a exclusão do usuário.");
 
         // Se tudo correu bem, comitar a transação
-        $conn->commit();
+    $conn->commit();
 
     } catch (Exception $e) {
         // Se algo deu errado, reverter a transação
