@@ -78,9 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Log da ação de redefinição de senha
                 if(isset($_SESSION['userNome'])) {
-                    log_action($userID, 'Redefinição de Senha', 'Redefiniu a senha para o usuário: ' . $_SESSION['userNome']);
+                    log_action($userID, 'Redefinição de Senha', 'Redefiniu a senha para o usuário: ' . $_SESSION['userNome'], 'Senha redefinida com sucesso.');
                 } else {
-                    log_action($userID, 'Redefinição de Senha', 'Redefiniu a senha para o userID: ' . $userID);
+                    log_action($userID, 'Redefinição de Senha', 'Redefiniu a senha para o userID: ' . $userID, 'Senha redefinida com sucesso.');
                 }
 
                 // Limpar a sessão após redefinição da senha

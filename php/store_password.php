@@ -22,12 +22,9 @@ $userID = $_SESSION['userID'];
 
 // Recuperar o nome do usuário
 $userNome = '';
-if ($stmt = $conn->prepare("SELECT userNome FROM users WHERE userID = ?")) {
-    $stmt->bind_param("i", $userID);
-    $stmt->execute();
-    $stmt->bind_result($userNome);
-    $stmt->fetch();
-    $stmt->close();
+$stmt = $conn->prepare("SELECT userNome FROM users WHERE userID = ?");
+if ($stmt->execute([$userID])) {
+    $userNome = $stmt->fetchColumn();
 }
 
 // Verificar se o formulário foi enviado
@@ -55,74 +52,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Preparar a consulta SQL para adicionar senha
                 $sql = "INSERT INTO gerenciadorsenhas.passwords (user_id, site_name, email, name, password, url) VALUES (?, ?, ?, ?, ?, ?)";
                 $encryptedPassword = encryptPassword($password, $key, $cipher, $iv_length);
-
-                // Preparar a declaração
-                if ($stmt = $conn->prepare($sql)) {
-                    // Vincular parâmetros para adicionar
-                    $stmt->bind_param("isssss", $userID, $siteName, $email, $loginName, $encryptedPassword, $url);
-
-                    // Executar a declaração
-                    if ($stmt->execute()) {
-                        $successMessage = 'Senha armazenada com sucesso!';
-                        logAction($conn, $userID, 'Adicionar Senha', 'Usuário ' . $userNome . ' adicionou uma senha.');
-                        header("Location: " . $_SERVER['PHP_SELF']);
-                        exit();
-                    } else {
-                        $errorMessage = 'Ocorreu um erro ao processar a senha. Por favor, tente novamente.';
-                    }
-
-                    $stmt->close();
+                $stmt = $conn->prepare($sql);
+                if ($stmt->execute([$userID, $siteName, $email, $loginName, $encryptedPassword, $url])) {
+                    $successMessage = 'Senha armazenada com sucesso!';
+                    logAction($conn, $userID, 'Adicionar Senha', 'Usuário ' . $userNome . ' adicionou uma senha.');
+                    header("Location: " . $_SERVER['PHP_SELF']);
+                    exit();
                 } else {
-                    $errorMessage = 'Não foi possível preparar a declaração SQL.';
+                    $errorMessage = 'Ocorreu um erro ao processar a senha. Por favor, tente novamente.';
                 }
             } elseif ($actionType == 'update') {
                 // Preparar a consulta SQL para atualizar senha
                 $sql = "UPDATE gerenciadorsenhas.passwords SET site_name = ?, url = ?, email = ?, name = ?, password = ? WHERE senhaId = ? AND user_id = ?";
                 $encryptedPassword = encryptPassword($password, $key, $cipher, $iv_length);
-
-                // Preparar a declaração
-                if ($stmt = $conn->prepare($sql)) {
-                    // Vincular parâmetros para atualizar
-                    $stmt->bind_param("ssssssi", $siteName, $url, $email, $loginName, $encryptedPassword, $passwordId, $userID);
-
-                    // Executar a declaração
-                    if ($stmt->execute()) {
-                        $successMessage = 'Senha atualizada com sucesso!';
-                        logAction($conn, $userID, 'Atualizar Senha', 'Usuário ' . $userNome . ' atualizou uma senha.');
-                        header("Location: " . $_SERVER['PHP_SELF']);
-                        exit();
-                    } else {
-                        $errorMessage = 'Ocorreu um erro ao processar a senha. Por favor, tente novamente.';
-                    }
-
-                    $stmt->close();
+                $stmt = $conn->prepare($sql);
+                if ($stmt->execute([$siteName, $url, $email, $loginName, $encryptedPassword, $passwordId, $userID])) {
+                    $successMessage = 'Senha atualizada com sucesso!';
+                    logAction($conn, $userID, 'Atualizar Senha', 'Usuário ' . $userNome . ' atualizou uma senha.');
+                    header("Location: " . $_SERVER['PHP_SELF']);
+                    exit();
                 } else {
-                    $errorMessage = 'Não foi possível preparar a declaração SQL.';
+                    $errorMessage = 'Ocorreu um erro ao processar a senha. Por favor, tente novamente.';
                 }
             }
         }
     } elseif ($actionType == 'delete') {
         // Preparar a consulta SQL para deletar senha
         $sql = "DELETE FROM gerenciadorsenhas.passwords WHERE senhaId = ? AND user_id = ?";
-
-        // Preparar a declaração
-        if ($stmt = $conn->prepare($sql)) {
-            // Vincular parâmetros para deletar
-            $stmt->bind_param("ii", $passwordId, $userID);
-
-            // Executar a declaração
-            if ($stmt->execute()) {
-                $successMessage = 'Senha deletada com sucesso!';
-                logAction($conn, $userID, 'Deletar Senha', 'Usuário ' . $userNome . ' deletou uma senha.');
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
-            } else {
-                $errorMessage = 'Ocorreu um erro ao deletar a senha. Por favor, tente novamente.';
-            }
-
-            $stmt->close();
+        $stmt = $conn->prepare($sql);
+        if ($stmt->execute([$passwordId, $userID])) {
+            $successMessage = 'Senha deletada com sucesso!';
+            logAction($conn, $userID, 'Deletar Senha', 'Usuário ' . $userNome . ' deletou uma senha.');
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
         } else {
-            $errorMessage = 'Não foi possível preparar a declaração SQL para deletar.';
+            $errorMessage = 'Ocorreu um erro ao deletar a senha. Por favor, tente novamente.';
         }
     }
 }
@@ -130,18 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 // Recuperar informações salvas para exibir
 $savedPasswords = [];
 $sql = "SELECT senhaId, site_name, url, email, name, password FROM gerenciadorsenhas.passwords WHERE user_id = ?";
-if ($stmt = $conn->prepare($sql)) {
-    $stmt->bind_param("i", $userID);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    while ($row = $result->fetch_assoc()) {
-        // Descriptografar a senha para exibição
-        $row['password'] = decryptPassword($row['password'], $key, $cipher, $iv_length);
-        $savedPasswords[] = $row;
-    }
-
-    $stmt->close();
+$stmt = $conn->prepare($sql);
+$stmt->execute([$userID]);
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+foreach ($result as $row) {
+    // Descriptografar a senha para exibição
+    $row['password'] = decryptPassword($row['password'], $key, $cipher, $iv_length);
+    $savedPasswords[] = $row;
 }
 
 // Verifica se a imagem existe no sistema de arquivos

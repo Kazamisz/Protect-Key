@@ -1,4 +1,6 @@
+
 <?php
+require_once __DIR__ . '/functions.php'; // Garante que validarCPF e outras funções estejam disponíveis
 // Este arquivo assume que $conn é um objeto de conexão PDO de conectar.php
 // e as funções de functions.php estão disponíveis.
 
@@ -45,7 +47,7 @@ function cadastrarUsuario($conn, $userNome, $userEmail, $userCpf, $userTel, $use
                 $errorMessage = $emailError;
             } else {
                 $conn->commit();
-                log_action($userID, 'Registro', 'Novo usuário registrado: ' . $userNome);
+                log_action($conn, $userID, 'Registro', 'Novo usuário registrado: ' . $userNome);
                 $successMessage = 'Usuário registrado com sucesso! O token foi enviado para o seu e-mail.';
                 // Redirecionar para a página de login após um atraso
                 echo "<script>

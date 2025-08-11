@@ -25,15 +25,9 @@ if (!checkAdminRole($conn, $userID)) {
 
 // Consultar logs do banco de dados
 $sql = "SELECT id, user_id, action_type, description, ip_address, created_at FROM logs ORDER BY created_at DESC";
-if ($stmt = $conn->prepare($sql)) {
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    // Buscar logs
-    while ($row = $result->fetch_assoc()) {
-        $logs[] = $row;
-    }
-    $stmt->close();
+$stmt = $conn->prepare($sql);
+if ($stmt->execute()) {
+    $logs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
     $errorMessage = 'Não foi possível preparar a consulta.';
 }

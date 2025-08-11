@@ -14,37 +14,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($userEmail)) {
         // Verificar se o email existe no banco de dados
         $sql = "SELECT userID, dicaSenha FROM gerenciadorsenhas.users WHERE userEmail = ?";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("s", $userEmail);
-            $stmt->execute();
-            $stmt->store_result();
-            
-            if ($stmt->num_rows > 0) {
-                $stmt->bind_result($userID, $dicaSenha);
-                $stmt->fetch();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$userEmail]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                // Enviar a dica de senha para o email
-                if (sendDicaSenhaEmail($userEmail, $dicaSenha) === '') {
+        if ($result) {
+            $userID = $result['userID'];
+            $dicaSenha = $result['dicaSenha'];
 
-           // Registrar ação de envio da dica de senha com sucesso
-           logAction($conn, $userID, 'Dica de Senha', 'Dica de senha enviada com sucesso para: ' . $userEmail);
+            // Enviar a dica de senha para o email
+            if (sendDicaSenhaEmail($userEmail, $dicaSenha) === '') {
+                // Registrar ação de envio da dica de senha com sucesso
+                logAction($conn, $userID, 'Dica de Senha', 'Dica de senha enviada com sucesso para: ' . $userEmail);
 
-           // Dica enviada com sucesso, redirecionar para o login
-           $_SESSION['success_message'] = "Dica de senha enviada para o seu email!"; // Armazena a mensagem na sessão
-           header("Location: login.php");
-           exit();
+                // Dica enviada com sucesso, redirecionar para o login
+                $_SESSION['success_message'] = "Dica de senha enviada para o seu email!"; // Armazena a mensagem na sessão
+                header("Location: login.php");
+                exit();
+            } else {
+                $message = 'Erro ao enviar a dica de senha. Tente novamente.';
+            }
         } else {
-            $message = 'Erro ao enviar a dica de senha. Tente novamente.';
+            $message = 'Dica de senha enviada para o seu email!';
         }
     } else {
-        $message = 'Dica de senha enviada para o seu email!';
-    }
-    $stmt->close();
-} else {
-    $message = 'Erro ao preparar a consulta.';
-}
-    } else {
-        $message = 'Por favor, insira um email.';
+        $message = 'Erro ao preparar a consulta.';
     }
 }
 ?>
