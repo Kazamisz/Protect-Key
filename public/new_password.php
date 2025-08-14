@@ -36,6 +36,10 @@ try {
 
 // Processar a redefinição de senha
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        $errorMessage = 'Requisição inválida.';
+    } else {
     $newPassword = $_POST['newPassword'];
     $confirmPassword = $_POST['confirmPassword'];
     $dicaSenha = !empty($_POST['dicaSenha']) ? $_POST['dicaSenha'] : $dicaSenhaAtual; // Se não preencher, usar a dica atual
@@ -78,9 +82,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // Log da ação de redefinição de senha
                 if(isset($_SESSION['userNome'])) {
-                    log_action($userID, 'Redefinição de Senha', 'Redefiniu a senha para o usuário: ' . $_SESSION['userNome'], 'Senha redefinida com sucesso.');
+                    log_action($conn, $userID, 'Redefinição de Senha', 'Redefiniu a senha para o usuário: ' . $_SESSION['userNome']);
                 } else {
-                    log_action($userID, 'Redefinição de Senha', 'Redefiniu a senha para o userID: ' . $userID, 'Senha redefinida com sucesso.');
+                    log_action($conn, $userID, 'Redefinição de Senha', 'Redefiniu a senha para o userID: ' . $userID);
                 }
 
                 // Limpar a sessão após redefinição da senha
@@ -101,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // error_log($e->getMessage());
         }
     }
+}
 }
 ?>
 
@@ -162,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 ?>
                                 <p>Bem-vindo, <?php echo htmlspecialchars($primeiroNome); ?></p>
                                 <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                                <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                                 <p>Bem-vindo!</p>
@@ -184,6 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="wrapper" style="height: 70%;">
 
                 <form action="" method="post" onsubmit="return validateForm()">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                     <h1>Redefinir Senha</h1>
 
                     <div class="input-box">

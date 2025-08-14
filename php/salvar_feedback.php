@@ -1,9 +1,14 @@
 <?php
 session_start();
 require('conectar.php');
-require('logAction.php');
+require_once('functions.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        header("Location: ../index.php?error=invalid_csrf");
+        exit();
+    }
     $userID = $_SESSION['user_id'] ?? null;
     $userID = filter_var($userID, FILTER_VALIDATE_INT);
 
@@ -22,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $comments = $_POST['comments'] ?? '';
         $actionType = 'Exclusão de Conta';
         $description = "Usuário ID $userID solicitou exclusão. Motivo: $reason. Comentários: $comments";
-        logAction($conn, $userID, $actionType, $description);
+    log_action($conn, $userID, $actionType, $description);
 
         // Ordem de exclusão para respeitar as chaves estrangeiras
         $tablesToDeleteFrom = ['passwords', 'documents', 'verification_codes', 'logs'];

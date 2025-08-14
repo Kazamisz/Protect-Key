@@ -1,19 +1,31 @@
-# Arquivo de segredos e configurações de ambiente
+############################
+# Protect-Key .gitignore
+############################
+
+# Env files (do not commit real secrets)
 .env
+.env.*
+!.env.example
 
-# Pastas de dependências gerenciadas pelo Composer
-# Elas são recriadas com o comando "composer install"
-/vendor/
-/lib/
+# Dependencies
+vendor/
 
-# Arquivos de log que podem ser gerados durante o desenvolvimento
+# User uploads and runtime data
+uploads/
+!uploads/.gitkeep
+
+# Logs and cache
 *.log
 logs/
+storage/
+storage/logs/
+php_errors.log
 
-# Arquivos de configuração de IDEs/Editores populares
+# IDE/editor
 .vscode/
 .idea/
 
-# Arquivos de sistema operacional (macOS e Windows)
+# OS junk
 .DS_Store
 Thumbs.db
+

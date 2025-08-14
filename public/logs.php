@@ -184,7 +184,7 @@ if (isset($userID)) {
                                 ?>
                                 <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
                                 <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                                <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                                 <p>Bem-vindo!</p>

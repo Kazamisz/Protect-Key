@@ -37,22 +37,22 @@ if (isset($body->data->id)) {
         switch ($status) {
             case 'approved':
                 // Pagamento aprovado - Registrar log no banco de dados
-                logAction($conn, $userID, 'Pagamento', "Pagamento aprovado: ID $paymentId, Referência $external_reference");
+                log_action($conn, $userID, 'Pagamento', "Pagamento aprovado: ID $paymentId, Referência $external_reference");
                 break;
 
             case 'pending':
                 // Pagamento pendente - Registrar log no banco de dados
-                logAction($conn, $userID, 'Pagamento', "Pagamento pendente: ID $paymentId, Referência $external_reference");
+                log_action($conn, $userID, 'Pagamento', "Pagamento pendente: ID $paymentId, Referência $external_reference");
                 break;
 
             case 'rejected':
                 // Pagamento rejeitado - Registrar log no banco de dados
-                logAction($conn, $userID, 'Pagamento', "Pagamento rejeitado: ID $paymentId, Referência $external_reference");
+                log_action($conn, $userID, 'Pagamento', "Pagamento rejeitado: ID $paymentId, Referência $external_reference");
                 break;
 
             default:
                 // Outros status de pagamento (ex: in_process, cancelled) - Registrar log no banco de dados
-                logAction($conn, $userID, 'Pagamento', "Outro status: ID $paymentId, Status: $status, Referência $external_reference");
+                log_action($conn, $userID, 'Pagamento', "Outro status: ID $paymentId, Status: $status, Referência $external_reference");
                 break;
         }
 
@@ -62,14 +62,14 @@ if (isset($body->data->id)) {
 
     } catch (MPApiException $e) {
         // Registrar erro de API no banco de dados
-        logAction($conn, $userID, 'Erro', "Erro ao consultar pagamento: " . $e->getMessage());
+    log_action($conn, $userID, 'Erro', "Erro ao consultar pagamento: " . $e->getMessage());
         echo 'Erro: ' . htmlspecialchars($e->getMessage());
         exit;
     }
 
 } else {
     // Notificação inválida ou sem ID - Registrar log no banco de dados
-    logAction($conn, $userID, 'Erro', "Notificação inválida: " . json_encode($body));
+    log_action($conn, $userID, 'Erro', "Notificação inválida: " . json_encode($body));
 }
 
 http_response_code(200); // Retorna 200 OK para o Mercado Pago

@@ -6,15 +6,19 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-// Definir a chave de criptografia (deve ser mantida em segredo)
-$key = 'my_secret_key'; // A chave deve ter 32 bytes para AES-256
-$cipher = "AES-256-CBC"; // Cipher method
-$iv_length = openssl_cipher_iv_length($cipher); // Comprimento do vetor de inicialização (IV)
+// Criptografia do cofre: chave deve vir do ambiente e ter 32 bytes (AES-256)
+$cipher = 'AES-256-CBC';
+$iv_length = openssl_cipher_iv_length($cipher);
+
+// Carrega chave de criptografia com fallback seguro (deriva 32 bytes via SHA-256 binário)
+$rawKey = getenv('ENCRYPTION_KEY') ?: '';
+$key = strlen((string)$rawKey) === 32 ? $rawKey : hash('sha256', (string)$rawKey, true);
 
 // Função para criptografar uma senha usando AES
 function encryptPassword($password, $key, $cipher, $iv_length)
 {
-    $iv = openssl_random_pseudo_bytes($iv_length);
+    // Gera IV criptograficamente seguro
+    $iv = random_bytes($iv_length);
     $encrypted = openssl_encrypt($password, $cipher, $key, 0, $iv);
     return base64_encode($encrypted . '::' . $iv);
 }
@@ -22,8 +26,16 @@ function encryptPassword($password, $key, $cipher, $iv_length)
 // Função para descriptografar uma senha usando AES
 function decryptPassword($encrypted, $key, $cipher, $iv_length)
 {
-    list($encrypted_data, $iv) = explode('::', base64_decode($encrypted), 2);
-    return openssl_decrypt($encrypted_data, $cipher, $key, 0, $iv);
+    $decoded = base64_decode($encrypted, true);
+    if ($decoded === false) {
+        return '';
+    }
+    $parts = explode('::', $decoded, 2);
+    if (count($parts) !== 2) {
+        return '';
+    }
+    [$encrypted_data, $iv] = $parts;
+    return openssl_decrypt($encrypted_data, $cipher, $key, 0, $iv) ?: '';
 }
 
 
@@ -77,22 +89,22 @@ function getPasswordCount($userID, $conn)
     }
 }
 
-// Função para gerar um token de 6 dígitos (Sintaxe PDO)
+// Função para gerar um token de 6 dígitos único (usa CSPRNG)
 function generateToken($conn)
 {
-    if (!$conn) return rand(100000, 999999);
+    if (!$conn) return random_int(100000, 999999);
     try {
         do {
-            $token = rand(100000, 999999);
+            $token = (string)random_int(100000, 999999);
             $sql = "SELECT COUNT(*) FROM users WHERE userToken = ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$token]);
-            $count = $stmt->fetchColumn();
+            $count = (int)$stmt->fetchColumn();
         } while ($count > 0);
         return $token;
     } catch (PDOException $e) {
         error_log("Erro em generateToken: " . $e->getMessage());
-        return rand(100000, 999999); // Fallback
+        return random_int(100000, 999999); // Fallback
     }
 }
 
@@ -102,18 +114,44 @@ function sendEmail($toEmail, $subject, $bodyContent, $altBodyContent = '')
     $mail = new PHPMailer(true);
 
     try {
+        // Carrega variáveis de ambiente com fallback para $_ENV
+        $host = getenv('MAIL_HOST') ?: ($_ENV['MAIL_HOST'] ?? '');
+        $username = getenv('MAIL_USERNAME') ?: ($_ENV['MAIL_USERNAME'] ?? '');
+        $password = getenv('MAIL_PASSWORD') ?: ($_ENV['MAIL_PASSWORD'] ?? '');
+    $port = (int) (getenv('MAIL_PORT') ?: ($_ENV['MAIL_PORT'] ?? 587));
+    $encryption = strtolower((string)(getenv('MAIL_ENCRYPTION') ?: ($_ENV['MAIL_ENCRYPTION'] ?? 'tls')));
+        $fromAddress = getenv('MAIL_FROM_ADDRESS') ?: ($_ENV['MAIL_FROM_ADDRESS'] ?? '');
+        $fromName = getenv('MAIL_FROM_NAME') ?: ($_ENV['MAIL_FROM_NAME'] ?? 'Protect Key');
+
+        // Valida remetente e aplica fallback seguro em dev
+        if (!filter_var($fromAddress, FILTER_VALIDATE_EMAIL)) {
+            // Fallback local para evitar erro "Invalid address" durante desenvolvimento
+            $fromAddress = 'no-reply@protectkey.local';
+            error_log('MAIL_FROM_ADDRESS inválido ou ausente. Usando fallback no-reply@protectkey.local');
+        }
+
+        // Valida configuração mínima do SMTP
+        if (empty($host) || empty($username) || empty($password) || empty($port)) {
+            error_log('Configuração SMTP ausente: verifique MAIL_HOST, MAIL_USERNAME, MAIL_PASSWORD, MAIL_PORT.');
+            return 'Falha ao enviar o e-mail. Configuração SMTP ausente.';
+        }
+
         // Configurações do servidor SMTP
-        $mail->CharSet = "UTF-8";
+        $mail->CharSet = 'UTF-8';
         $mail->isSMTP();
-        $mail->Host = getenv('MAIL_HOST');
+        $mail->Host = $host;
         $mail->SMTPAuth = true;
-        $mail->Username = getenv('MAIL_USERNAME');
-        $mail->Password = getenv('MAIL_PASSWORD');
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = getenv('MAIL_PORT');
+        $mail->Username = $username;
+        $mail->Password = $password;
+        if ($encryption === 'ssl' || $port === 465) {
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        } else {
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        }
+        $mail->Port = $port;
 
         // Configurações do e-mail
-        $mail->setFrom(getenv('MAIL_FROM_ADDRESS'), 'Segurança');
+        $mail->setFrom($fromAddress, $fromName);
         $mail->addAddress($toEmail);
 
         // Conteúdo do e-mail
@@ -125,7 +163,9 @@ function sendEmail($toEmail, $subject, $bodyContent, $altBodyContent = '')
         $mail->send();
         return '';
     } catch (Exception $e) {
-        return "Erro ao enviar o e-mail: {$mail->ErrorInfo}";
+        // Não expor detalhes sensíveis ao usuário final
+        error_log('Erro ao enviar e-mail: ' . $mail->ErrorInfo);
+        return 'Falha ao enviar o e-mail. Tente novamente mais tarde.';
     }
 }
 
@@ -283,16 +323,16 @@ function validarCPF($userCpf)
     return true;
 }
 
-//função para gerar codigo unico
+// Função para gerar código único (CSPRNG)
 function generateUniqueCode($length = 10)
 {
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $charactersLength = strlen($characters);
-    $randomString = '';
+    $alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $max = strlen($alphabet) - 1;
+    $code = '';
     for ($i = 0; $i < $length; $i++) {
-        $randomString .= $characters[rand(0, $charactersLength - 1)];
+        $code .= $alphabet[random_int(0, $max)];
     }
-    return $randomString;
+    return $code;
 }
 
 // Função para verificar se o e-mail ou CPF ou o Tel já estão registrados (Sintaxe PDO)
@@ -313,13 +353,24 @@ function isAlreadyRegistered($conn, $field, $value)
     }
 }
 
-// Função para gerar um token CSRF
+// CSRF helpers
 function generateCsrfToken()
 {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
     return $_SESSION['csrf_token'];
+}
+
+function verifyCsrfToken($token)
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], (string)$token);
 }
 
 ?>

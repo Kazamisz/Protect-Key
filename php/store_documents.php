@@ -1,5 +1,6 @@
 <?php
 // File: php/store_documents.php
+require_once __DIR__ . '/functions.php';
 // Assumes $conn (PDO) and $userID are available.
 
 $errorMessage = '';
@@ -56,7 +57,8 @@ function handle_document_upload($file) {
     }
 
     if (!file_exists(UPLOAD_DIR)) {
-        mkdir(UPLOAD_DIR, 0777, true);
+        // Permissões mais restritas
+        mkdir(UPLOAD_DIR, 0755, true);
     }
 
     $fileName = basename($file['name']);
@@ -74,6 +76,22 @@ function handle_document_upload($file) {
         return false;
     }
 
+    // Verificação adicional de MIME via finfo
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($file['tmp_name']);
+    $allowedMime = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'pdf' => 'application/pdf',
+        'doc' => 'application/msword',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+    if (!isset($allowedMime[$fileExt]) || $mime !== $allowedMime[$fileExt]) {
+        $errorMessage = 'MIME type inválido para o arquivo enviado.';
+        return false;
+    }
+
     if (move_uploaded_file($file['tmp_name'], $fileTarget)) {
         return $fileTarget;
     }
@@ -84,6 +102,10 @@ function handle_document_upload($file) {
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($userID)) {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        $errorMessage = 'Requisição inválida.';
+    } else {
     $actionType = $_POST['actionType'] ?? '';
     $documentId = filter_input(INPUT_POST, 'documentId', FILTER_VALIDATE_INT);
 
@@ -170,6 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($userID)) {
     } catch (PDOException $e) {
         $errorMessage = "Erro de banco de dados: Por favor, tente novamente.";
         error_log("Document operation error: " . $e->getMessage());
+    }
     }
 }
 

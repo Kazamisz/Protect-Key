@@ -85,7 +85,7 @@ $showAddButton = $showAddButton ?? true;
                                     <?php echo $primeiroNome; ?>
                                 </p>
                                 <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                                <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                                 <p>Bem-vindo!</p>
@@ -105,6 +105,7 @@ $showAddButton = $showAddButton ?? true;
         <!-- Formulário de adição/atualização de documento -->
         <section class="form-container" id="formContainer">
             <form id="documentForm" action="" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                 <!-- Campos ocultos para identificar ação e ID do documento -->
                 <input type="hidden" id="actionType" name="actionType" value="add">
                 <input type="hidden" id="documentId" name="documentId" value="">
@@ -211,7 +212,7 @@ $showAddButton = $showAddButton ?? true;
                                 </td>
 
 
-                                <td data-label="Ações" class="buttons" style="display:flex; justify-content:center;">
+                                <td data-label="Ações" class="buttons" style="display:flex; justify-content:center; gap:10px;">
 
                                     <!-- Botão de atualização de documento -->
                                     <button style="margin-right: 20px;" type="button" class="button" onclick="editDocument(<?php echo htmlspecialchars($document['documentId']); ?>,
@@ -231,8 +232,16 @@ $showAddButton = $showAddButton ?? true;
                                         </span>
                                     </button>
 
+                                    <!-- Link para download seguro do documento -->
+                                    <?php if (!empty($document['documentId'])): ?>
+                                        <a class="button" href="<?php echo '/php/download_document.php?id=' . urlencode($document['documentId']); ?>" title="Baixar documento">
+                                            <span class="button__text">Baixar</span>
+                                        </a>
+                                    <?php endif; ?>
+
                                     <!-- Formulário para exclusão de documento -->
                                     <form action="" method="post" style="width: fit-content;">
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                                         <input type="hidden" name="documentId"
                                             value="<?php echo htmlspecialchars($document['documentId']); ?>">
                                         <input type="hidden" name="actionType" value="delete">

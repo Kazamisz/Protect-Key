@@ -37,6 +37,11 @@ function login_user_session($conn, $user)
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // CSRF check
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        $errorMessage = 'Requisição inválida.';
+    } else {
     $userIdent = $_POST['userIdent']; // This can be CPF or Token
     $userPassword = $_POST['userPassword'];
     $userTwoFactorCode = $_POST['userTwoFactorCode'] ?? '';
@@ -102,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } catch (PDOException $e) {
             $errorMessage = 'Erro no banco de dados. Por favor, tente novamente.';
             error_log('Login Error: ' . $e->getMessage());
-        }
     }
+    }
+}
 }

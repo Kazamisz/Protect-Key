@@ -68,17 +68,20 @@ function cadastrarUsuario($conn, $userNome, $userEmail, $userCpf, $userTel, $use
     }
 }
 
-
 // Verificar se o formulário foi enviado
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Recuperar dados do formulário
-    $userNome = $_POST['userNome'];
-    $userEmail = $_POST['userEmail'];
-    $userCpf = $_POST['userCpf'] ?? null;
-    $userTel = $_POST['userTel'] ?? null;
-    $userPassword = $_POST['userPassword'];
-    $userPasswordRepeat = $_POST['userPasswordRepeat'];
-    $dicaSenha = $_POST['dicaSenha'] ?? null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        $errorMessage = 'Requisição inválida.';
+    } else {
+        // Recuperar dados do formulário
+        $userNome = $_POST['userNome'] ?? '';
+        $userEmail = $_POST['userEmail'] ?? '';
+        $userCpf = $_POST['userCpf'] ?? null;
+        $userTel = $_POST['userTel'] ?? null;
+        $userPassword = $_POST['userPassword'] ?? '';
+        $userPasswordRepeat = $_POST['userPasswordRepeat'] ?? '';
+        $dicaSenha = $_POST['dicaSenha'] ?? null;
 
     // Validar dados
     if (empty($userNome) || empty($userEmail) || empty($userPassword) || empty($userPasswordRepeat)) {
@@ -105,5 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Continuar com o registro
             cadastrarUsuario($conn, $userNome, $userEmail, $userCpf, $userTel, $userPassword, $dicaSenha);
         }
+    }
     }
 }

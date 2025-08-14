@@ -18,10 +18,14 @@ $client = new PreferenceClient();
 
 // Função para criar uma preferência de pagamento
 function createPreference($client, $title, $description, $price, $currency = 'BRL') {
+    $notificationUrl = getenv('MP_NOTIFICATION_URL') ?: '';
+    if ($notificationUrl === '') {
+        error_log('MP_NOTIFICATION_URL não está definida no ambiente. Defina em produção para receber notificações.');
+    }
     try {
         $preference = $client->create([
             "external_reference" => "teste_" . $title, // Referência externa única para cada plano
-            "notification_url" => "https://6ee0-200-95-221-148.ngrok-free.app/notification.php", // URL para notificações de pagamento
+            "notification_url" => ($notificationUrl !== '' ? $notificationUrl : null), // URL para notificações de pagamento
             "items" => [
                 [
                     "id" => uniqid(), // ID único para o item

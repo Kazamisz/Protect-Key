@@ -29,6 +29,10 @@ if ($stmt->execute([$userID])) {
 
 // Verificar se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        $errorMessage = 'Requisição inválida.';
+    } else {
     $actionType = $_POST['actionType'];
 
     // Recuperar os dados do formulário
@@ -50,12 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Preparar SQL e executar com base na ação
             if ($actionType == 'add') {
                 // Preparar a consulta SQL para adicionar senha
-                $sql = "INSERT INTO gerenciadorsenhas.passwords (user_id, site_name, email, name, password, url) VALUES (?, ?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO passwords (user_id, site_name, email, name, password, url) VALUES (?, ?, ?, ?, ?, ?)";
                 $encryptedPassword = encryptPassword($password, $key, $cipher, $iv_length);
                 $stmt = $conn->prepare($sql);
                 if ($stmt->execute([$userID, $siteName, $email, $loginName, $encryptedPassword, $url])) {
                     $successMessage = 'Senha armazenada com sucesso!';
-                    logAction($conn, $userID, 'Adicionar Senha', 'Usuário ' . $userNome . ' adicionou uma senha.');
+                    log_action($conn, $userID, 'Adicionar Senha', 'Usuário ' . $userNome . ' adicionou uma senha.');
                     header("Location: " . $_SERVER['PHP_SELF']);
                     exit();
                 } else {
@@ -63,12 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             } elseif ($actionType == 'update') {
                 // Preparar a consulta SQL para atualizar senha
-                $sql = "UPDATE gerenciadorsenhas.passwords SET site_name = ?, url = ?, email = ?, name = ?, password = ? WHERE senhaId = ? AND user_id = ?";
+                $sql = "UPDATE passwords SET site_name = ?, url = ?, email = ?, name = ?, password = ? WHERE senhaId = ? AND user_id = ?";
                 $encryptedPassword = encryptPassword($password, $key, $cipher, $iv_length);
                 $stmt = $conn->prepare($sql);
                 if ($stmt->execute([$siteName, $url, $email, $loginName, $encryptedPassword, $passwordId, $userID])) {
                     $successMessage = 'Senha atualizada com sucesso!';
-                    logAction($conn, $userID, 'Atualizar Senha', 'Usuário ' . $userNome . ' atualizou uma senha.');
+                    log_action($conn, $userID, 'Atualizar Senha', 'Usuário ' . $userNome . ' atualizou uma senha.');
                     header("Location: " . $_SERVER['PHP_SELF']);
                     exit();
                 } else {
@@ -78,22 +82,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } elseif ($actionType == 'delete') {
         // Preparar a consulta SQL para deletar senha
-        $sql = "DELETE FROM gerenciadorsenhas.passwords WHERE senhaId = ? AND user_id = ?";
+        $sql = "DELETE FROM passwords WHERE senhaId = ? AND user_id = ?";
         $stmt = $conn->prepare($sql);
         if ($stmt->execute([$passwordId, $userID])) {
             $successMessage = 'Senha deletada com sucesso!';
-            logAction($conn, $userID, 'Deletar Senha', 'Usuário ' . $userNome . ' deletou uma senha.');
+            log_action($conn, $userID, 'Deletar Senha', 'Usuário ' . $userNome . ' deletou uma senha.');
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         } else {
             $errorMessage = 'Ocorreu um erro ao deletar a senha. Por favor, tente novamente.';
         }
     }
+    }
 }
 
 // Recuperar informações salvas para exibir
 $savedPasswords = [];
-$sql = "SELECT senhaId, site_name, url, email, name, password FROM gerenciadorsenhas.passwords WHERE user_id = ?";
+$sql = "SELECT senhaId, site_name, url, email, name, password FROM passwords WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->execute([$userID]);
 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

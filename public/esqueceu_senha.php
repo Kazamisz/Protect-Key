@@ -84,7 +84,7 @@ $userID = null;
                                 ?>
                                 <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
                                 <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                                <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                                 <p>Bem-vindo!</p>
@@ -105,6 +105,7 @@ $userID = null;
             <div class="wrapper" style="margin-bottom:20vh; margin-top:12vh;">
                 <h1 style="font-size: 36px; padding: 40px;">Esqueceu a Senha?</h1>
                 <form action="" method="post">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                     <div class="input-box" style="margin-top:50px;">
                         <input type="email" name="userEmail" placeholder="Digite seu email" required
                             style="margin: 0 50px 30px 50px;">

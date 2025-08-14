@@ -86,7 +86,7 @@ $userID = $_SESSION['userID'] ?? null;
                                 ?>
                                 <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
                                 <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                                <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                                 <p>Bem-vindo!</p>
@@ -106,6 +106,7 @@ $userID = $_SESSION['userID'] ?? null;
         <!-- Formulário de adição/atualização de senha -->
         <section class="form-container" id="formContainer">
             <form id="passwordForm" action="" method="post">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                 <!-- Campos ocultos para identificar ação e ID da senha -->
                 <input type="hidden" id="actionType" name="actionType" value="add">
                 <input type="hidden" id="passwordId" name="passwordId" value="">
@@ -230,10 +231,7 @@ $userID = $_SESSION['userID'] ?? null;
                                 </td>
                                 <td data-label="E-mail"><?php echo htmlspecialchars($password['email']); ?></td>
                                 <td data-label="Senha">
-                                    <span class="toggle-password"
-                                        onclick="showPassword(this, '<?php echo htmlspecialchars($password['password']); ?>')">
-                                        Mostrar
-                                    </span>
+                                    <button type="button" class="btn" onclick="copyPassword('<?php echo htmlspecialchars($password['password']); ?>')">Copiar</button>
                                 </td>
                                 <td data-label="Ações" class="buttons" style="display:flex; justify-content:center;">
 
@@ -259,6 +257,7 @@ $userID = $_SESSION['userID'] ?? null;
 
                                     <!-- Formulário para exclusão de senha -->
                                     <form action="" method="post" style="width: fit-content;">
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                                         <input type="hidden" name="passwordId"
                                             value="<?php echo htmlspecialchars($password['senhaId']); ?>">
                                         <input type="hidden" name="actionType" value="delete">
@@ -369,21 +368,23 @@ $userID = $_SESSION['userID'] ?? null;
         };
 
         function gerarSenha(tamanho = 16) {
-
             const passwordField = document.getElementById("password");
-            // Verifica se o campo já está preenchido
             if (passwordField.value !== "") {
                 const confirmar = confirm("Tem certeza que deseja substituir a senha?");
-                if (!confirmar) {
-                    return; // Sai da função se o usuário não confirmar
-                }
+                if (!confirmar) return;
             }
             const caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
+            const array = new Uint32Array(tamanho);
+            if (window.crypto && window.crypto.getRandomValues) {
+                window.crypto.getRandomValues(array);
+            } else {
+                for (let i = 0; i < tamanho; i++) array[i] = Math.floor(Math.random() * 4294967296);
+            }
             let senha = '';
             for (let i = 0; i < tamanho; i++) {
-                senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+                senha += caracteres[array[i] % caracteres.length];
             }
-            document.getElementById("password").value = senha;
+            passwordField.value = senha;
         }
 
 
@@ -417,27 +418,14 @@ $userID = $_SESSION['userID'] ?? null;
             document.getElementById('password').value = password;
         }
 
-        // Função para exibir a senha temporariamente
-        function showPassword(element, password) {
-            element.textContent = password;
-            element.style.textDecoration = 'none';
-            element.style.cursor = 'default';
-            var cell = element.parentElement;
-            cell.innerHTML = password;
-
-            setTimeout(function () {
-                cell.innerHTML = '<span class="toggle-password" onclick="showPassword(this, \'' + password + '\')">Mostrar</span>';
-            }, 3000);
+        // Função para copiar a senha para a área de transferência sem exibir no DOM
+        function copyPassword(password) {
+            navigator.clipboard.writeText(password)
+                .then(() => alert('Senha copiada para a área de transferência.'))
+                .catch(() => alert('Não foi possível copiar a senha.'));
         }
 
-        window.onload = function () {
-            const addPasswordBtn = document.getElementById('addPasswordBtn');
-            const formContainer = document.getElementById('formContainer');
-
-            addPasswordBtn.addEventListener('click', () => {
-                toggleForm();
-            });
-        }
+    // removido window.onload redundante e elemento inexistente (#addPasswordBtn)
 
         // Cria o MutationObserver para observar mudanças no DOM
         const observer = new MutationObserver(verificarTabela);
@@ -535,12 +523,7 @@ $userID = $_SESSION['userID'] ?? null;
             }, 3000);
         }
 
-        window.onload = function () {
-            const addPasswordBtn = document.getElementById('addPasswordBtn');
-            addPasswordBtn.addEventListener('click', () => {
-                toggleForm();
-            });
-        }
+    // removido window.onload redundante e elemento inexistente (#addPasswordBtn)
 
         function verSenha() {
             const passwordInput = document.getElementById("password");

@@ -1,8 +1,9 @@
 <?php
 session_start();
 require_once __DIR__ . '/../php/bootstrap.php';
-require_once __DIR__ . "/../php/planos.php";
 $conn = require_once __DIR__ . '/../php/conectar.php';
+require_once __DIR__ . '/../php/functions.php';
+require_once __DIR__ . '/../php/preference.php';
 
 // Verifica se o usuário está logado
 if (isset($_SESSION['userID'])) {
@@ -82,7 +83,7 @@ if (isset($_SESSION['userID'])) {
                                 ?>
                                 <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
                                 <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                                <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                                 <p>Bem-vindo!</p>

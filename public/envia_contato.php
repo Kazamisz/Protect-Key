@@ -21,6 +21,10 @@ if (isset($_SESSION['userNome']) && isset($_SESSION['userEmail'])) {
 
 // Verifica se o formulário foi submetido
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verifyCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(400);
+        $errorMessage = 'Requisição inválida.';
+    } else {
     $name = $_POST['name'] ?? '';
     $email = $_POST['email'] ?? '';
     $message = $_POST['message'] ?? '';
@@ -46,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = sendEmail('ProtectKey@gmail.com', $subject, $bodyContent);
 
         if ($result === '') {
-            logAction($conn, $userID, 'Suporte', 'Suporte de conta:' . $_SESSION['userNome'] . ' ');
+            log_action($conn, $userID, 'Suporte', 'Suporte de conta:' . $_SESSION['userNome'] . ' ');
             // Redireciona após o envio do e-mail
             header('Location: envia_contato.php?success=1');
             exit();
@@ -54,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errorMessage = $result;
         }
     }
+}
 }
 
 // Mensagem de sucesso para exibir se redirecionado
@@ -133,7 +138,7 @@ if (isset($_GET['success'])) {
                                 ?>
                             <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
                             <a href="conta.php"> Detalhes da Conta</a>
-                            <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                            <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                             <p>Bem-vindo!</p>
@@ -154,6 +159,7 @@ if (isset($_GET['success'])) {
             <div class="form-card2">
                 <!-- Formulário de contato com PHP -->
                 <form class="form" action="envia_contato.php" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                     <p class="form-heading">Entrar em Contato</p>
 
                     <!-- Exibe mensagens de sucesso ou erro -->

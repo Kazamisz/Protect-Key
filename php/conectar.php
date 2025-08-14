@@ -4,12 +4,13 @@
 
 if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1')) {
     // --- AMBIENTE LOCAL ---
-    // Para forçar conexão TCP/IP em vez de socket, use '127.0.0.1' em vez de 'localhost'
-    $host = '127.0.0.1';
-    $port = '3306';
-    $db   = 'gerenciadorsenhas';
-    $user = 'root';
-    $pass = 'etec2024';
+    // Valores podem ser sobrescritos por variáveis de ambiente.
+    $host = getenv('DB_HOST') ?: '127.0.0.1';
+    $port = getenv('DB_PORT') ?: '3306';
+    $db   = getenv('DB_DATABASE') ?: 'gerenciadorsenhas';
+    $user = getenv('DB_USERNAME') ?: 'root';
+    // Evite senhas hardcoded em repositório público; use envs.
+    $pass = getenv('DB_LOCAL_PASSWORD') ?: (getenv('DB_PASSWORD') ?: '');
 } else {
     // --- AMBIENTE DE PRODUÇÃO (RAILWAY) ---
     // A forma mais robusta é usar a URL de conexão fornecida pelo Railway.

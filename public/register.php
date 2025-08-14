@@ -89,7 +89,7 @@ $userID = null;
                                 ?>
                                 <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
                                 <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                                <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                                 <p>Bem-vindo!</p>
@@ -109,6 +109,7 @@ $userID = null;
         <section class="hero">
             <div class="wrapper">
                 <form action="" method="post">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
 
                     <h1>Registro</h1>
 

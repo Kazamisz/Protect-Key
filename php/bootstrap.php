@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Carrega as variáveis de ambiente apenas em ambiente de desenvolvimento local.
-// No Railway, as variáveis são injetadas diretamente no ambiente.
+// Em produção (ex.: Railway), use variáveis reais do ambiente. Nunca commitar .env.
 if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1')) {
     try {
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');

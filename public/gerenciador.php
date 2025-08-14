@@ -86,7 +86,7 @@ if (isset($_SESSION['userID'])) {
                                 ?>
                                 <p>Bem-vindo, <?php echo $primeiroNome; ?></p>
                                 <a href="conta.php"> Detalhes da Conta</a>
-                                <a href="./php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
+                                <a href="/php/logout.php" style="border-radius: 15px;">Sair da Conta</a>
 
                             <?php else: ?>
                                 <p>Bem-vindo!</p>
@@ -124,6 +124,7 @@ if (isset($_SESSION['userID'])) {
 
         <!-- Formulário de pesquisa -->
         <form method="POST" action="" class="formulario">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
             <input type="text" name="searchTerm" value="<?= htmlspecialchars($searchTerm ?? '', ENT_QUOTES, 'UTF-8') ?>"
                 placeholder="Pesquisar">
             <button type="submit" name="actionType" value="search">Pesquisar</button>
@@ -176,6 +177,7 @@ if (isset($_SESSION['userID'])) {
                                 </td>
                                 <td>
                                     <form method="POST" action="">
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                                         <input type="hidden" name="userID"
                                             value="<?= htmlspecialchars($user['userID'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                                         <button type="submit" name="actionType" value="update"
@@ -194,6 +196,7 @@ if (isset($_SESSION['userID'])) {
             <div id="codeForm">
                 <h2>Verifique o Código</h2>
                 <form method="POST" action="">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                     <input type="hidden" name="userID"
                         value="<?= htmlspecialchars($userToEdit ?? '', ENT_QUOTES, 'UTF-8') ?>">
                     <label for="codigo">Código:</label>
@@ -208,6 +211,7 @@ if (isset($_SESSION['userID'])) {
             <div id="editForm">
                 <h2>Editar Usuário</h2>
                 <form method="POST" action="">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                     <input type="hidden" name="userID" value="<?= htmlspecialchars($_POST['userID'] ?? ''); ?>">
                     <label for="userNome">Nome:</label>
                     <input type="text" id="userNome" name="userNome"
