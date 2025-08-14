@@ -1,36 +1,19 @@
 <?php
-// As variáveis de ambiente são carregadas pelo bootstrap.php.
-// O código abaixo define as credenciais corretas para o ambiente local ou de produção.
+// Carrega Dotenv para popular variáveis a partir do .env quando disponível
+require_once __DIR__ . '/bootstrap.php';
 
-if (isset($_SERVER['SERVER_NAME']) && ($_SERVER['SERVER_NAME'] == 'localhost' || $_SERVER['SERVER_NAME'] == '127.0.0.1')) {
-    // --- AMBIENTE LOCAL ---
-    // Valores podem ser sobrescritos por variáveis de ambiente.
-    $host = getenv('DB_HOST') ?: '127.0.0.1';
-    $port = getenv('DB_PORT') ?: '3306';
-    $db   = getenv('DB_DATABASE') ?: 'gerenciadorsenhas';
-    $user = getenv('DB_USERNAME') ?: 'root';
-    // Evite senhas hardcoded em repositório público; use envs.
-    $pass = getenv('DB_LOCAL_PASSWORD') ?: (getenv('DB_PASSWORD') ?: '');
-} else {
-    // --- AMBIENTE DE PRODUÇÃO (RAILWAY) ---
-    // A forma mais robusta é usar a URL de conexão fornecida pelo Railway.
-    $db_url = getenv('MYSQL_URL');
-    
-    if ($db_url) {
-        $db_parts = parse_url($db_url);
-        $host = $db_parts['host'];
-        $port = $db_parts['port'];
-        $user = $db_parts['user'];
-        $pass = $db_parts['pass'];
-        $db   = ltrim($db_parts['path'], '/');
-    } else {
-        // Fallback para variáveis individuais se a URL não estiver definida
-        $host = getenv('MYSQLHOST');
-        $port = getenv('MYSQLPORT');
-        $db   = getenv('MYSQLDATABASE');
-        $user = getenv('MYSQLUSER');
-        $pass = getenv('MYSQLPASSWORD');
-    }
+// Ler EXCLUSIVAMENTE variáveis de ambiente DB_* (conforme solicitado)
+$host = getenv('DB_HOST') ?: '';
+$port = getenv('DB_PORT') ?: '';
+$db   = getenv('DB_DATABASE') ?: '';
+$user = getenv('DB_USERNAME') ?: '';
+$pass = getenv('DB_PASSWORD') ?: '';
+
+// Validação mínima para evitar conexões com parâmetros vazios
+if ($host === '' || $port === '' || $db === '' || $user === '') {
+    error_log('Configuração de banco incompleta: verifique DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME e DB_PASSWORD no ambiente/.env');
+    http_response_code(500);
+    exit('Configuração do banco ausente. Atualize o .env.');
 }
 
 $dsn = "mysql:host={$host};port={$port};dbname={$db};charset=utf8mb4";

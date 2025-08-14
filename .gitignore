@@ -1,31 +1,34 @@
 ############################
-# Protect-Key .gitignore
+# .gitignore do Protect-Key
 ############################
 
-# Env files (do not commit real secrets)
+# Arquivos de ambiente (NUNCA versionar segredos reais)
 .env
 .env.*
 !.env.example
 
-# Dependencies
+# Dependências do Composer
 vendor/
 
-# User uploads and runtime data
+# Uploads e dados gerados pelo usuário
 uploads/
 !uploads/.gitkeep
 
-# Logs and cache
+# Logs e arquivos de cache
 *.log
 logs/
 storage/
 storage/logs/
 php_errors.log
 
-# IDE/editor
+# Verificação de integridade do BD
+_health_db.php
+
+# Configurações de IDE/editor
 .vscode/
 .idea/
 
-# OS junk
+# Lixo de sistema operacional
 .DS_Store
 Thumbs.db
 
