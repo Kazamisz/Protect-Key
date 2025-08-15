@@ -1,7 +1,9 @@
 <?php
 session_start();
+
 require_once __DIR__ . '/../php/bootstrap.php';
 require_once __DIR__ . '/../php/functions.php';
+
 
 // Manter o userID antes de destruir a sessão
 $userID = $_SESSION['user_id'] ?? null;
@@ -37,7 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             Por favor, conte-nos o motivo da sua decisão para que possamos melhorar nossos serviços.
         </p>
         <form class="feedback-form" action="<?php echo __DIR__ . '/../php/salvar_feedback.php'; ?>" method="POST">
+<<<<<<< HEAD
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
+=======
+>>>>>>> 3df2800e20cfc1034e9a80a3491652d2a25fb820
             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($userID); ?>">
             <label for="reason">Por que você desativou sua conta?</label>
             <select name="reason" id="reason" required>
