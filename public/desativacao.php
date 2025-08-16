@@ -16,33 +16,34 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conta Desativada</title>
     <link rel="stylesheet" href="style/styles-desativacao.css">
 </head>
+
 <body>
     <div class="container">
         <h1>Sentimos Muito!</h1>
         <p>
-    Sua conta foi desativada com sucesso. Sentiremos sua falta! 
-    Note que quaisquer pagamentos realizados na conta não são reembolsáveis.
-</p>
-<p>
-    Caso deseje reativar sua conta, basta fazer login novamente dentro de **30 dias**. 
-    Após esse período, todos os dados associados à sua conta serão excluídos permanentemente, 
-    e não será possível recuperá-la.
-</p>
+            Sua conta foi desativada com sucesso. Sentiremos sua falta!
+            Note que quaisquer pagamentos realizados na conta não são reembolsáveis.
+        </p>
+        <p>
+            Caso deseje reativar sua conta, basta fazer login novamente dentro de **30 dias**.
+            Após esse período, todos os dados associados à sua conta serão excluídos permanentemente,
+            e não será possível recuperá-la.
+        </p>
 
         <p>
             Por favor, conte-nos o motivo da sua decisão para que possamos melhorar nossos serviços.
         </p>
         <form class="feedback-form" action="<?php echo __DIR__ . '/../php/salvar_feedback.php'; ?>" method="POST">
-<<<<<<< HEAD
+
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
-=======
->>>>>>> 3df2800e20cfc1034e9a80a3491652d2a25fb820
+
             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($userID); ?>">
             <label for="reason">Por que você desativou sua conta?</label>
             <select name="reason" id="reason" required>
@@ -55,12 +56,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 <option value="Outro">Outro</option>
             </select>
             <label for="comments">Comentários adicionais (opcional)</label>
-            <textarea name="comments" id="comments" rows="4" placeholder="Gostaríamos de saber mais sobre sua experiência..."></textarea>
+            <textarea name="comments" id="comments" rows="4"
+                placeholder="Gostaríamos de saber mais sobre sua experiência..."></textarea>
             <button type="submit" class="submit-btn">Enviar Feedback e Sair</button>
         </form>
         <a href="index.php">Voltar para a Página Inicial</a>
     </div>
 
-    
+
 </body>
+
 </html>
