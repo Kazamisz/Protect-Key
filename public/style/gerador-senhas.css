@@ -22,13 +22,13 @@ main {
 }
 
 .container {
-  width: fit-content;
+  min-width: fit-content;
   height: auto;
   border-radius: 20px;
   padding: 5px;
   box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
   background-image: linear-gradient(144deg, #295497, #17115742);
-  margin: 12vh auto;
+  margin:5vh auto 10vh;
   max-width: 600px;
 }
 
@@ -95,6 +95,7 @@ main {
   text-shadow: 11px 5px 15px rgb(74 63 127 / 37%);
   background: #ffffff;
   -webkit-background-clip: text;
+  background-clip: text;
   /* Usado para aplicar o gradiente ao texto */
   -webkit-text-fill-color: transparent;
   /* Deixa o fundo do texto transparente */
@@ -111,6 +112,7 @@ main {
   color: #ffffff;
   background: linear-gradient(45deg, #f5faff, #f5f4ff);
   -webkit-background-clip: text;
+  background-clip: text;
   /* Usado para aplicar o gradiente ao texto */
   -webkit-text-fill-color: transparent;
   /* Deixa o fundo do texto transparente */
@@ -321,7 +323,7 @@ main {
 .actions {
   display: flex;
   justify-content: space-between;
-  margin: 0vh 1.5vw 4vh;
+  margin: 0vh 4vw 4vh;
 }
 
 .btn {

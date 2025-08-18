@@ -35,6 +35,7 @@ $showAddButton = $showAddButton ?? true;
     <link rel="stylesheet" href="./style/styles-buttons.css">
 
     <title>Controle de Documentos</title>
+    <script src="/script/toast.js"></script>
 </head>
 
 <body>
@@ -417,7 +418,7 @@ $showAddButton = $showAddButton ?? true;
                 e.preventDefault();
 
                 if (!validateRequiredFields()) {
-                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    showToast('Preencha todos os campos obrigatórios.', 'error');
                     return;
                 }
 
@@ -449,7 +450,7 @@ $showAddButton = $showAddButton ?? true;
                     })
                     .catch(error => {
                         console.error('Erro:', error);
-                        alert('Erro ao salvar o documento');
+                        showToast('Erro ao salvar o documento', 'error');
                     });
             });
 
@@ -492,10 +493,11 @@ $showAddButton = $showAddButton ?? true;
                                 .then(() => {
                                     this.closest('tr').remove();
                                     updateInitialState();
+                                    showToast('Documento excluído.', 'success');
                                 })
                                 .catch(error => {
                                     console.error('Erro:', error);
-                                    alert('Erro ao excluir o documento');
+                                    showToast('Erro ao excluir o documento', 'error');
                                 });
                         }
                     });

@@ -32,12 +32,6 @@ $userID = $_SESSION['userID'] ?? null;
     <link rel="stylesheet" href="./style/styles-buttons.css">
 
     <title>Controle de Senhas</title>
-
-    <style>
-        body {
-            display: hidden;
-        }
-    </style>
 </head>
 
 <body>
@@ -176,7 +170,7 @@ $userID = $_SESSION['userID'] ?? null;
                         <span class="csb-text">Salvar</span>
                     </button>
 
-                    <!--Botão excluir-->
+                    <!--Botão cancelar-->
                     <button type="button" class="db-button db-noselect" onclick="cancelForm()">
                         <span class="db-text">Cancelar</span>
                         <span class="db-icon">
@@ -207,80 +201,76 @@ $userID = $_SESSION['userID'] ?? null;
         <!-- Tabela com senhas salvas -->
         <section id="savedTable" style="padding: 80px 150px 0 150px;">
             <?php if (!empty($savedPasswords)): ?>
-                <table>
+                <table class="vault-table">
                     <thead>
                         <tr>
                             <th>Site</th>
                             <th>Login</th>
                             <th>E-mail</th>
                             <th>Senha</th>
-                            <th style="width: 100px;">Ações</th>
+                            <th style="width: 120px;">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- Laço para exibir senhas salvas -->
                         <?php foreach ($savedPasswords as $password): ?>
                             <tr>
-                                <td data-label="Site">
-                                    <a href="<?php echo htmlspecialchars($password['url']); ?>" target="_blank">
+                                <td data-label="Site" class="cell-site">
+                                    <a href="<?php echo htmlspecialchars($password['url']); ?>" target="_blank"
+                                        class="vault-link">
                                         <?php echo htmlspecialchars($password['site_name']); ?>
                                     </a>
                                 </td>
-                                <td data-label="Login">
+                                <td data-label="Login" class="cell-login">
                                     <?php echo htmlspecialchars($password['name']); ?>
                                 </td>
-                                <td data-label="E-mail"><?php echo htmlspecialchars($password['email']); ?></td>
-                                <td data-label="Senha">
-                                    <button type="button" class="btn" onclick="copyPassword('<?php echo htmlspecialchars($password['password']); ?>')">Copiar</button>
+                                <td data-label="E-mail" class="cell-email"><?php echo htmlspecialchars($password['email']); ?>
                                 </td>
-                                <td data-label="Ações" class="buttons" style="display:flex; justify-content:center;">
-
-                                    <!-- Botão de atualização de senha com backend integrado e estilo atualizado -->
-                                    <button style="margin-right: 20px;" type="button" class="button" onclick="editPassword(<?php echo htmlspecialchars($password['senhaId']); ?>,
+                                <td data-label="Senha" class="cell-password">
+                                    <div class="pw-wrapper">
+                                        <span class="pw-value" aria-live="polite">••••••</span>
+                                        <div class="pw-actions">
+                                            <button type="button" class="icon-btn show-btn" title="Mostrar senha"
+                                                aria-label="Mostrar senha"
+                                                onclick="showPassword(this, '<?php echo htmlspecialchars($password['password']); ?>')">
+                                                <img class="icon-img" style="padding-left: 0px; margin: 0 !important;"
+                                                    src="./img/inspecIcon.png" alt="Mostrar">
+                                            </button>
+                                            <button type="button" class="icon-btn copy-btn" title="Copiar senha"
+                                                aria-label="Copiar senha"
+                                                onclick="copyPassword('<?php echo htmlspecialchars($password['password']); ?>')">
+                                                <img class="icon-img" style="padding-left: 0px; margin: 0 !important;"
+                                                    src="./img/copyIcon.png" alt="Copiar">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td data-label="Ações" class="cell-actions">
+                                    <!-- Editar -->
+                                    <button type="button" class="icon-btn" style="width: 42px; height: auto;" title="Editar"
+                                        onclick="editPassword(<?php echo htmlspecialchars($password['senhaId']); ?>,
                         '<?php echo htmlspecialchars($password['site_name']); ?>', 
                         '<?php echo htmlspecialchars($password['url']); ?>', 
                         '<?php echo htmlspecialchars($password['name']); ?>', 
                         '<?php echo htmlspecialchars($password['email']); ?>', 
                         '<?php echo htmlspecialchars($password['password']); ?>')">
-                                        <span class="button__text">Atualizar</span>
-                                        <span class="button__icon">
-                                            <svg class="svg" height="48" viewBox="0 0 48 48" width="48"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M35.3 12.7c-2.89-2.9-6.88-4.7-11.3-4.7-8.84 0-15.98 7.16-15.98 16s7.14 16 15.98 16c7.45 0 13.69-5.1 15.46-12h-4.16c-1.65 4.66-6.07 8-11.3 8-6.63 0-12-5.37-12-12s5.37-12 12-12c3.31 0 6.28 1.38 8.45 3.55l-6.45 6.45h14v-14l-4.7 4.7z">
-                                                </path>
-                                                <path d="M0 0h48v48h-48z" fill="none"></path>
-                                            </svg>
-                                        </span>
+                                        <img class="icon-img"
+                                            style="width: 33px; height: auto; padding: 2px 0; margin: 0 !important;"
+                                            src="./img/editKey.png" alt="Copiar">
                                     </button>
 
-
-                                    <!-- Formulário para exclusão de senha -->
-                                    <form action="" method="post" style="width: fit-content;">
-                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
+                                    <!-- Excluir -->
+                                    <form action="" method="post" class="inline-form"
+                                        onsubmit="return confirm('Tem certeza que deseja excluir esta senha?')">
+                                        <input type="hidden" name="csrf_token"
+                                            value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                                         <input type="hidden" name="passwordId"
                                             value="<?php echo htmlspecialchars($password['senhaId']); ?>">
                                         <input type="hidden" name="actionType" value="delete">
-                                        <button type="submit" class="bin-button"
-                                            onclick="return confirm('Tem certeza que deseja excluir esta senha?')">
-                                            <svg class="bin-top" viewBox="0 0 39 7" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <line y1="5" x2="39" y2="5" stroke="white" stroke-width="4"></line>
-                                                <line x1="12" y1="1.5" x2="26.0357" y2="1.5" stroke="white" stroke-width="3">
-                                                </line>
-                                            </svg>
-                                            <svg class="bin-bottom" viewBox="0 0 33 39" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <mask id="path-1-inside-1_8_19" fill="white">
-                                                    <path
-                                                        d="M0 0H33V35C33 37.2091 31.2091 39 29 39H4C1.79086 39 0 37.2091 0 35V0Z">
-                                                    </path>
-                                                </mask>
-                                                <path
-                                                    d="M0 0H33H0ZM37 35C37 39.4183 33.4183 43 29 43H4C-0.418278 43 -4 39.4183 -4 35H4H29H37ZM4 43C-0.418278 43 -4 39.4183 -4 35V0H4V35V43ZM37 0V35C37 39.4183 33.4183 43 29 43V35V0H37Z"
-                                                    fill="white" mask="url(#path-1-inside-1_8_19)"></path>
-                                                <path d="M12 6L12 29" stroke="white" stroke-width="4"></path>
-                                                <path d="M21 6V29" stroke="white" stroke-width="4"></path>
+                                        <button type="submit" class="vault-action danger" title="Excluir">
+                                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path fill="currentColor"
+                                                    d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                                             </svg>
                                         </button>
                                     </form>
@@ -295,8 +285,13 @@ $userID = $_SESSION['userID'] ?? null;
         </section>
 
 
-        <!-- Imagem adicionar senha -->
-        <img src="./img/sem-itens.png" alt="Adicionar Senha" class="img-no-itens" id="img-senha">
+        <!-- Imagem quando não há itens -->
+        <?php if (empty($savedPasswords)): ?>
+            <img src="./img/sem-itens.png" alt="Sem itens" class="img-no-itens" id="img-senha">
+        <?php else: ?>
+            <img src="./img/sem-itens.png" alt="Sem itens" class="img-no-itens is-hidden" id="img-senha"
+                style="display:none;">
+        <?php endif; ?>
 
 
 
@@ -307,8 +302,8 @@ $userID = $_SESSION['userID'] ?? null;
             </button>
         <?php else: ?>
             <p
-                style="color: red; font-weight: bold; font-size: 18px; padding: 10px; background-color: #fdd; border-radius: 10px; width:fit-content; margin: 60px auto 0 auto;">
-                Limite de senhas salvas pelo plano básico atingidas</p>
+                style="color: red; font-weight: bold; font-size: 18px; padding: 10px; background-color: #fdd; border-radius: 10px; width:fit-content; margin: 60px auto 6vh auto;">
+                Limite de Senhas Atingido.</p>
         <?php endif; ?>
 
 
@@ -357,194 +352,12 @@ $userID = $_SESSION['userID'] ?? null;
         </div>
     </footer>
 
-
-    <!-- Funções JavaScript para manipular formulário e senhas -->
-    <script>
-
-        window.onload = function () {
-            setTimeout(function () {
-                document.body.style.visibility = 'visible'; // Exibe o conteúdo da página após 0.5 segundos
-            }, 5000); // 500 milissegundos = 0.5 segundos
-        };
-
-        function gerarSenha(tamanho = 16) {
-            const passwordField = document.getElementById("password");
-            if (passwordField.value !== "") {
-                const confirmar = confirm("Tem certeza que deseja substituir a senha?");
-                if (!confirmar) return;
-            }
-            const caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
-            const array = new Uint32Array(tamanho);
-            if (window.crypto && window.crypto.getRandomValues) {
-                window.crypto.getRandomValues(array);
-            } else {
-                for (let i = 0; i < tamanho; i++) array[i] = Math.floor(Math.random() * 4294967296);
-            }
-            let senha = '';
-            for (let i = 0; i < tamanho; i++) {
-                senha += caracteres[array[i] % caracteres.length];
-            }
-            passwordField.value = senha;
-        }
-
-
-        // Função para exibir/esconder o formulário com transição suave
-        function toggleForm() {
-            var formContainer = document.getElementById('formContainer');
-            if (formContainer.classList.contains('show')) {
-                formContainer.classList.remove('show');
-            } else {
-                formContainer.classList.add('show');
-            }
-        }
-
-        // Função para esconder o formulário
-        function cancelForm() {
-            var formContainer = document.getElementById('formContainer');
-            formContainer.classList.remove('show');
-        }
-
-        // Função para editar a senha e exibir o formulário
-        function editPassword(id, siteName, url, loginName, email, password) {
-            var formContainer = document.getElementById('formContainer');
-            formContainer.classList.add('show');
-
-            document.getElementById('actionType').value = 'update';
-            document.getElementById('passwordId').value = id;
-            document.getElementById('siteName').value = siteName;
-            document.getElementById('url').value = url;
-            document.getElementById('loginName').value = loginName;
-            document.getElementById('email').value = email;
-            document.getElementById('password').value = password;
-        }
-
-        // Função para copiar a senha para a área de transferência sem exibir no DOM
-        function copyPassword(password) {
-            navigator.clipboard.writeText(password)
-                .then(() => alert('Senha copiada para a área de transferência.'))
-                .catch(() => alert('Não foi possível copiar a senha.'));
-        }
-
-    // removido window.onload redundante e elemento inexistente (#addPasswordBtn)
-
-        // Cria o MutationObserver para observar mudanças no DOM
-        const observer = new MutationObserver(verificarTabela);
-
-        // Observa o body para mudanças no filho (no caso, a tabela pode ser removida ou adicionada)
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        // Função para verificar se a tabela existe e mostrar/ocultar a imagem e o botão
-        function verificarTabela() {
-            const tabela = document.querySelector('#savedTable table'); // Seleciona a tabela dentro da section
-            const imagem = document.getElementById('img-senha');
-
-            if (tabela) {
-                imagem.style.display = 'none';
-                botaoAdicionar.style.display = 'none';
-            } else {
-                imagem.style.display = 'flex';
-                botaoAdicionar.style.display = 'block';
-            }
-        }
-
-        // Verifica no carregamento inicial
-        document.addEventListener("DOMContentLoaded", verificarTabela);
-    </script>
-
-    <!-- Funções JavaScript para manipular formulário e senhas -->
-    <script>
-        function gerarSenha(tamanho = 16) {
-            const passwordField = document.getElementById("password");
-            if (passwordField.value !== "") {
-                const confirmar = confirm("Tem certeza que deseja substituir a senha?");
-                if (!confirmar) return;
-            }
-            const caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()';
-            let senha = '';
-            for (let i = 0; i < tamanho; i++) {
-                senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-            }
-            document.getElementById("password").value = senha;
-        }
-
-        function toggleForm() {
-            const formContainer = document.getElementById('formContainer');
-            const botaoAdicionar = document.querySelector('.botao-adicionar');
-            const savedTable = document.getElementById('savedTable');
-
-            formContainer.classList.toggle('show');
-
-            if (formContainer.classList.contains('show')) {
-                botaoAdicionar.style.display = 'none';
-                if (savedTable) savedTable.style.display = 'none';
-            } else {
-                botaoAdicionar.style.display = 'block';
-                if (savedTable) savedTable.style.display = 'block';
-            }
-        }
-
-        function cancelForm() {
-            const formContainer = document.getElementById('formContainer');
-            const botaoAdicionar = document.querySelector('.botao-adicionar');
-            const savedTable = document.getElementById('savedTable');
-
-            formContainer.classList.remove('show');
-            botaoAdicionar.style.display = 'block';
-            if (savedTable) savedTable.style.display = 'block';
-        }
-
-        function editPassword(id, siteName, url, loginName, email, password) {
-            const formContainer = document.getElementById('formContainer');
-            const botaoAdicionar = document.querySelector('.botao-adicionar');
-            const savedTable = document.getElementById('savedTable');
-
-            formContainer.classList.add('show');
-            botaoAdicionar.style.display = 'none';
-            if (savedTable) savedTable.style.display = 'none';
-
-            document.getElementById('actionType').value = 'update';
-            document.getElementById('passwordId').value = id;
-            document.getElementById('siteName').value = siteName;
-            document.getElementById('url').value = url;
-            document.getElementById('loginName').value = loginName;
-            document.getElementById('email').value = email;
-            document.getElementById('password').value = password;
-        }
-
-        function showPassword(element, password) {
-            element.textContent = password;
-            element.style.textDecoration = 'none';
-            element.style.cursor = 'default';
-            const cell = element.parentElement;
-            cell.innerHTML = password;
-
-            setTimeout(() => {
-                cell.innerHTML = '<span class="toggle-password" onclick="showPassword(this, \'' + password + '\')">Mostrar</span>';
-            }, 3000);
-        }
-
-    // removido window.onload redundante e elemento inexistente (#addPasswordBtn)
-
-        function verSenha() {
-            const passwordInput = document.getElementById("password");
-            const togglePasswordImage = document.getElementById("togglePasswordImage");
-
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                togglePasswordImage.classList.remove("fa-eye");
-                togglePasswordImage.classList.add("fa-eye-slash");
-            } else {
-                passwordInput.type = "password";
-                togglePasswordImage.classList.remove("fa-eye-slash");
-                togglePasswordImage.classList.add("fa-eye");
-            }
-        }
-    </script>
+    <!-- JS da página extraído para arquivo dedicado -->
+    <script src="/script/store_password.js"></script>
 
     <!--import js-->
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="/script/scroll-reveal.js"></script>
-    <script src="/script/preCarregamento.js"></script>
 
 </body>
 

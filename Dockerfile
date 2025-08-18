@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
 # Habilita o mod_rewrite do Apache, essencial para roteamento
 RUN a2enmod rewrite
 
-# Adiciona a diretiva ServerName para suprimir o aviso AH00558
+# Adiciona a diretiva ServerName 
+# Define um ServerName padrão para evitar warnings (pode ser sobrescrito por env no runtime)
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Instala Composer
@@ -29,11 +30,17 @@ RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' /et
 WORKDIR /var/www/html
 RUN if [ -f composer.json ]; then composer install --no-dev --optimize-autoloader; fi
 
-# Exponha a porta 8080
+# Exponha uma porta padrão (Railway setará PORT dinamicamente em runtime)
 EXPOSE 8080
 
-# Altera a porta padrão do Apache para 8080
-RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
+# Ajusta Apache para usar porta do ambiente (PORT) com fallback em 8080
+# Nota: a substituição dinâmica será feita via script de entrada
+RUN sed -i 's/Listen 80/Listen ${PORT}/' /etc/apache2/ports.conf || true
+RUN sed -i 's#<VirtualHost \*:80>#<VirtualHost *:${PORT}>#' /etc/apache2/sites-available/000-default.conf || true
 
 # Inicia o Apache em primeiro plano
-CMD ["apache2-foreground"]
+# EntryPoint que prepara a porta dinâmica antes de subir o Apache
+RUN printf '#!/bin/bash\nset -e\n: "${PORT:=8080}"\nsed -i "s/Listen .*/Listen ${PORT}/" /etc/apache2/ports.conf || true\nsed -i "s#<VirtualHost \*:.*>#<VirtualHost *:${PORT}>#" /etc/apache2/sites-available/000-default.conf || true\nexec apache2-foreground\n' > /entrypoint.sh \
+ && chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

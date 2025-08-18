@@ -149,15 +149,11 @@ sr.reveal('.wrapper', {
 
 
 
-//scroll store
-ScrollReveal().reveal('#savedTable', {
-    origin: 'left', // A animação vem de baixo
-    distance: '50px', // Distância de movimento
-    duration: 800, // Duração da animação em ms
-    delay: 100, // Atraso entre os elementos
-    interval: 100, // Intervalo de animação entre as linhas da tabela
-    easing: 'ease-in-out'
-});
+// Não aplicar ScrollReveal diretamente em '#savedTable'.
+// O savedTable pode ser ocultado dinamicamente (por exemplo: modo de edição)
+// e o ScrollReveal, ao revelar, pode forçar sua exibição (conflito de UI).
+// Se for necessário efeito, revele elementos filhos estáticos ou adicione uma
+// classe específica para controle (ex.: 'sr-allow') e usar esse seletor aqui.
 
 
 // Animações dinâmicas para o conteúdo da aba ativa no gerador de senhas
