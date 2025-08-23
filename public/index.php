@@ -462,7 +462,11 @@ if (isset($_SESSION['userID'])) {
                         <span class="btn" style="color: white; font-size: 18px; padding: 20px 0;">Você já possui este
                             plano</span>
                     <?php else: ?>
-                        <a href="<?php echo htmlspecialchars($paymentUrlPro); ?>" class="action">Escolher Pro</a>
+                        <?php if ($paymentUrlPro === '#'): ?>
+                            <a href="#" class="action" onclick="alert('Pagamento indisponível no ambiente atual. Configure MERCADOPAGO_ACCESS_TOKEN para habilitar.'); return false;" title="Pagamento indisponível no ambiente atual">Escolher Pro</a>
+                        <?php else: ?>
+                            <a href="<?php echo htmlspecialchars($paymentUrlPro); ?>" class="action">Escolher Pro</a>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
 
@@ -501,8 +505,11 @@ if (isset($_SESSION['userID'])) {
                         <span class="btn" style="color: white; font-size: 18px; padding: 20px 0;">Você já possui este
                             plano</span>
                     <?php else: ?>
-                        <a href="<?php echo htmlspecialchars($paymentUrlPremium); ?>" class="action">Escolher
-                            Premium</a>
+                        <?php if ($paymentUrlPremium === '#'): ?>
+                            <a href="#" class="action" onclick="alert('Pagamento indisponível no ambiente atual. Configure MERCADOPAGO_ACCESS_TOKEN para habilitar.'); return false;" title="Pagamento indisponível no ambiente atual">Escolher Premium</a>
+                        <?php else: ?>
+                            <a href="<?php echo htmlspecialchars($paymentUrlPremium); ?>" class="action">Escolher Premium</a>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
             </div>
